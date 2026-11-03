@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qarz Daftari & Onlayn Do'kon - Mukammal Tizim</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛍️</text></svg>">
+</head>
+<body>
+
+    <!-- YUQORI ASOSIY NAVIGATSIYA -->
+    <header class="navbar">
+        <div class="container nav-content">
+            <div class="brand" id="brand-logo" onclick="app.showStoreView()">
+                <div class="brand-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path><path d="M6 6h10"></path><path d="M6 10h10"></path><path d="M6 14h6"></path></svg>
+                </div>
+                <div class="brand-text">
+                    <h1 id="header-store-name">BARAKA SAVDO MARKAZI</h1>
+                    <span>Onlayn Do'kon & Qarz Daftari (Face ID)</span>
+                </div>
+            </div>
+
+            <!-- Asosiy Navigatsiya Tugmalari -->
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <button class="btn btn-primary btn-sm" id="nav-btn-store" onclick="app.showStoreView()">
+                    🛍️ Onlayn Do'kon
+                </button>
+                <button class="btn btn-outline btn-sm" id="nav-btn-debt" onclick="app.showDebtView()">
+                    📖 Qarz Daftari
+                </button>
+            </div>
+
+            <div class="nav-actions">
+                <!-- Savat Tugmasi -->
+                <button class="btn btn-outline btn-sm cart-nav-btn" onclick="app.openCartModal()" title="Savatni ko'rish">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>
+                    <span>Savat</span>
+                    <span class="cart-count-badge" id="nav-cart-count">0</span>
+                </button>
+
+                <!-- Yorug'/Qorong'i rejim -->
+                <button class="btn btn-outline btn-icon" id="theme-toggle-btn" title="Rejimni o'zgartirish" onclick="app.toggleTheme()">
+                    <svg id="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+                    <svg id="theme-icon-sun" class="d-none" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+                </button>
+
+                <!-- Mijoz Kabineti Tugmasi -->
+                <button class="btn btn-outline btn-sm" id="cust-auth-btn" onclick="app.openCustomerAuthModal()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span id="cust-auth-btn-text">Mijoz Kabineti</span>
+                </button>
+
+                <!-- Admin Panel Tugmasi -->
+                <button class="btn btn-outline btn-sm" id="portal-switch-btn" onclick="app.showAdminPanel()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M9 3v18"></path><path d="m14 9 3 3-3 3"></path></svg>
+                    <span>Admin Panel</span>
+                </button>
+
+                <!-- Admin tizimdan chiqish -->
+                <button class="btn btn-danger btn-sm d-none" id="logout-btn" onclick="app.handleLogout()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" x2="9" y1="12" y2="12"></line></svg>
+                    Chiqish
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================================
+         1. ONLAYN DO'KON (MARKET) BO'LIMI
+         ============================================================ -->
+    <main id="store-view" class="container" style="padding-top: 1.75rem; padding-bottom: 3rem;">
+        
+        <!-- Do'kon Hero Banner -->
+        <div style="background: linear-gradient(135deg, #1e3a8a, #0f172a); color: #ffffff; padding: 2.25rem 2rem; border-radius: var(--radius-xl); margin-bottom: 2rem; box-shadow: var(--shadow-lg); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+            <div>
+                <span class="badge" style="background-color: rgba(59, 130, 246, 0.3); color: #93c5fd; margin-bottom: 0.75rem;">
+                    🛍️ Rasmiy Onlayn Do'kon & Nasiya Savdo
+                </span>
+                <h2 style="font-size: 2rem; font-weight: 800; line-height: 1.25; margin-bottom: 0.5rem;">
+                    Mahsulotlarni Naqdga yoki <span style="color: #60a5fa;">Qarzga Sotib Oling!</span>
+                </h2>
+                <p style="opacity: 0.9; font-size: 0.95rem; max-width: 600px;">
+                    Kerakli mollarni savatga qo'shing va xarid usulini tanlang: naqd to'lang yoki to'g'ridan-to'g'ri o'z <strong>Qarz Daftaringizga</strong> yozdiring. 
+                    <br><strong style="color: #34d399;">Oldindan to'lasangiz keyingi oyga 0% foiz imtiyozi beriladi!</strong>
+                </p>
+            </div>
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <button class="btn btn-success btn-lg" onclick="app.openCartModal()">
+                    🛒 Savatni Ochish (<span id="store-banner-cart-count">0</span>)
+                </button>
+                <button class="btn btn-outline btn-lg" style="color: #fff; border-color: rgba(255,255,255,0.4);" onclick="app.showDebtView()">
+                    📖 Qarzimni Tekshirish
+                </button>
+            </div>
+        </div>
+
+        <!-- Filter va Qidiruv Bar -->
+        <div class="store-header-bar">
+            <!-- Kategoriyalar -->
+            <div class="category-pills" id="category-pills-container">
+                <button class="category-pill active" onclick="app.filterStoreCategory('all', this)">Barchasi</button>
+                <button class="category-pill" onclick="app.filterStoreCategory('Oziq-ovqat', this)">🌾 Oziq-ovqat</button>
+                <button class="category-pill" onclick="app.filterStoreCategory('Qurilish', this)">🧱 Qurilish mollari</button>
+                <button class="category-pill" onclick="app.filterStoreCategory('Xo\'jalik', this)">✨ Xo'jalik mollari</button>
+                <button class="category-pill" onclick="app.filterStoreCategory('Elektronika', this)">🔋 Elektronika</button>
+            </div>
+
+            <!-- Mahsulot qidirish -->
+            <div class="input-group" style="width: 280px;">
+                <span class="input-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+                </span>
+                <input type="text" id="store-search-input" class="form-control" style="height: 40px; padding-left: 2.25rem;" placeholder="Mahsulot qidirish..." oninput="app.renderStoreProducts()">
+            </div>
+        </div>
+
+        <!-- Mahsulotlar to'ri (Grid) -->
+        <div class="products-grid" id="store-products-grid">
+            <!-- Dinamik JS orqali to'ldiriladi -->
+        </div>
+
+    </main>
+
+    <!-- ============================================================
+         2. QARZ DAFTARI & MIJOZ KABINETI BO'LIMI
+         ============================================================ -->
+    <main id="debt-portal-view" class="d-none">
+
+        <!-- 2.1 AGAR MIJOZ KIRGAN BO'LSA: SHAXSIY KABINET -->
+        <section id="customer-cabinet-section" class="d-none" style="padding: 2rem 0;">
+            <div class="container" id="customer-cabinet-content">
+                <!-- JS orqali to'ldiriladi -->
+            </div>
+        </section>
+
+        <!-- 2.2 AGAR MIJOZ KIRMAGAN BO'LSA: OCHIQ QIDIRUV VA RO'YXATDAN O'TISH -->
+        <section id="public-guest-section" class="hero-section">
+            <div class="container">
+                <div class="hero-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    Face ID Biometrik Himoya & Shaffof Qarz Daftari
+                </div>
+                <h2 class="hero-title">O'z qarzingiz va hisobingizni <span>tekshiring</span></h2>
+                <p class="hero-subtitle">
+                    Telefon raqamingiz orqali qarz tarixingizni tekshiring yoki Face ID orqali shaxsiy kabinetingizga kiring.
+                    <br><strong class="text-success">Qarzni oldindan to'lasangiz keyingi oyga 0% foiz hisoblanadi!</strong>
+                </p>
+
+                <!-- Kirish & Ro'yxatdan O'tish Tezkor Tugmalari -->
+                <div style="display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 2rem; flex-wrap: wrap;">
+                    <button class="btn btn-primary btn-lg" onclick="app.openCustomerAuthModal('login')">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                        Shaxsiy Kabinetga Kirish
+                    </button>
+                    <button class="btn btn-outline btn-lg" onclick="app.openCustomerAuthModal('register')">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                        Yangi Ro'yxatdan O'tish (Face ID)
+                    </button>
+                    <button class="btn btn-outline btn-lg" onclick="app.openFaceLoginQuick()">
+                        📸 Face ID orqali kirish
+                    </button>
+                </div>
+
+                <!-- Qidiruv maydoni -->
+                <div class="search-box-card">
+                    <label class="form-label" for="public-search-input" style="text-align: left;">Telefon raqamingiz yoki Ismingiz:</label>
+                    <div class="search-input-wrapper">
+                        <div class="input-group">
+                            <span class="input-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+                            </span>
+                            <input type="text" id="public-search-input" class="form-control" placeholder="Masalan: 90 111 22 33 yoki Aliyev Vali..." autocomplete="off">
+                        </div>
+                        <button class="btn btn-primary btn-lg" onclick="app.handlePublicSearch()">
+                            Qidirish
+                        </button>
+                    </div>
+
+                    <!-- Tezkor namunalar -->
+                    <div class="quick-tags">
+                        <span>Sinab ko'rish uchun bosing:</span>
+                        <span class="tag-pill" onclick="app.fillPublicSearch('Aliyev Vali')">Aliyev Vali (0% bonus)</span>
+                        <span class="tag-pill" onclick="app.fillPublicSearch('Karimov Sardor')">Karimov Sardor (Kechikkan)</span>
+                        <span class="tag-pill" onclick="app.fillPublicSearch('Sobirova')">Sobirova Gulnora</span>
+                    </div>
+                </div>
+
+                <!-- Qidiruv Natijasi Ko'rsatiladigan Joy -->
+                <div id="public-result-container" class="customer-portal-result d-none">
+                    <!-- Dinamik JS orqali to'ldiriladi -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ============================================================
+         3. ADMIN PANEL BO'LIMI
+         ============================================================ -->
+    <main id="admin-panel-view" class="d-none">
+        
+        <!-- Admin Login Formasi -->
+        <section id="admin-login-section" class="hero-section">
+            <div class="container">
+                <div class="search-box-card" style="max-width: 440px;">
+                    <div style="text-align: center; margin-bottom: 1.5rem;">
+                        <div class="brand-icon" style="margin: 0 auto 1rem; width: 54px; height: 54px;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        </div>
+                        <h3 style="font-size: 1.4rem; font-weight: 800;">Admin Tizimiga Kirish</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">Do'kon boshqaruvi va hisob-kitoblar</p>
+                    </div>
+
+                    <form id="admin-login-form" onsubmit="app.handleAdminLogin(event)">
+                        <div class="form-group">
+                            <label class="form-label" for="login-username">Login:</label>
+                            <input type="text" id="login-username" class="form-control" value="admin" required placeholder="admin">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="login-password">Maxfiy Parol:</label>
+                            <input type="password" id="login-password" class="form-control" required placeholder="Parolni kiriting...">
+                        </div>
+                        <div style="background-color: var(--primary-light); padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--primary-text); margin-bottom: 1.25rem;">
+                            ℹ️ <strong>Standart parol:</strong> <code>123</code> (Sozlamalardan o'zgartirish mumkin)
+                        </div>
+                        <button type="submit" class="btn btn-primary w-full btn-lg">
+                            Tizimga Kirish
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Asosiy Dashboard -->
+        <section id="admin-dashboard-section" class="d-none">
+            
+            <div class="admin-header-bar">
+                <div class="container admin-top-content">
+                    <div class="admin-title-wrap">
+                        <h2>Do'kon & Qarz Boshqaruv Markazi</h2>
+                        <p id="dashboard-date-str">Bugun: 02-noyabr, 2026-yil</p>
+                    </div>
+                    <div class="admin-action-buttons">
+                        <button class="btn btn-primary" onclick="app.openAddDebtModal()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            + Yangi Qarz
+                        </button>
+                        <button class="btn btn-success" onclick="app.openPaymentModal()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                            To'lov Qabul Qilish
+                        </button>
+                        <button class="btn btn-outline" onclick="app.openAddProductModal()">
+                            + Yangi Mahsulot
+                        </button>
+                        <button class="btn btn-outline" onclick="app.openAddCustomerModal()">
+                            + Yangi Mijoz
+                        </button>
+                        <button class="btn btn-outline" onclick="QarzExport.exportCustomersToCSV()" title="Excelga yuklash">
+                            Excelga Eksport
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <!-- Statistika Vidjetlari -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div>
+                            <div class="stat-card-title">Do'konga Qaytishi Kerak (Asosiy Qarz)</div>
+                            <div class="stat-card-value text-danger" id="stat-total-remaining">0 so'm</div>
+                            <div class="stat-card-sub" id="stat-debtors-count">0 nafar faol qarzdor</div>
+                        </div>
+                        <div class="stat-icon red">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div>
+                            <div class="stat-card-title">Kechikkan Foizlar Hisobi</div>
+                            <div class="stat-card-value text-warning" id="stat-total-interest">0 so'm</div>
+                            <div class="stat-card-sub" id="stat-overdue-count">0 ta mijoz kechikkan</div>
+                        </div>
+                        <div class="stat-icon amber">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div>
+                            <div class="stat-card-title">Undirilgan / Qaytarilgan</div>
+                            <div class="stat-card-value text-success" id="stat-total-paid">0 so'm</div>
+                            <div class="stat-card-sub" id="stat-recovery-rate">Qaytarilish: 0%</div>
+                        </div>
+                        <div class="stat-icon green">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div>
+                            <div class="stat-card-title">Bugungi To'lovlar</div>
+                            <div class="stat-card-value text-primary" id="stat-today-payments">0 so'm</div>
+                            <div class="stat-card-sub" id="stat-month-payments">Shu oyda: 0 so'm</div>
+                        </div>
+                        <div class="stat-icon blue">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TIZIM TABLARI -->
+                <div class="tabs-container">
+                    <button class="tab-btn active" id="tab-btn-customers" onclick="app.switchTab('customers')">
+                        Mijozlar & Qarzdorlar (<span id="tab-badge-customers">0</span>)
+                    </button>
+                    <button class="tab-btn" id="tab-btn-products" onclick="app.switchTab('products')">
+                        🛍️ Do'kon & Ombor (<span id="tab-badge-products">0</span>)
+                    </button>
+                    <button class="tab-btn" id="tab-btn-orders" onclick="app.switchTab('orders')">
+                        📦 Buyurtmalar Tarixi (<span id="tab-badge-orders">0</span>)
+                    </button>
+                    <button class="tab-btn" id="tab-btn-debts" onclick="app.switchTab('debts')">
+                        Qarzlar Tarixi (<span id="tab-badge-debts">0</span>)
+                    </button>
+                    <button class="tab-btn" id="tab-btn-payments" onclick="app.switchTab('payments')">
+                        To'lovlar Tarixi (<span id="tab-badge-payments">0</span>)
+                    </button>
+                    <button class="tab-btn" id="tab-btn-requests" onclick="app.switchTab('requests')">
+                        So'rovlar (<span id="tab-badge-requests">0</span>)
+                    </button>
+                    <button class="tab-btn" id="tab-btn-settings" onclick="app.switchTab('settings')">
+                        Sozlamalar & Zaxira
+                    </button>
+                </div>
+
+                <!-- TAB 1: MIJOZLAR JADVALI -->
+                <div id="tab-content-customers" class="content-box">
+                    <div class="box-header">
+                        <div class="box-title">Qarzdorlar Ro'yxati</div>
+                        <div class="box-actions">
+                            <div class="input-group" style="width: 250px;">
+                                <span class="input-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+                                </span>
+                                <input type="text" id="admin-customer-search" class="form-control" style="height: 38px; padding-left: 2.25rem;" placeholder="Ism yoki telefon qidirish..." oninput="app.renderCustomersTable()">
+                            </div>
+
+                            <div class="filter-pills">
+                                <button class="filter-pill active" data-filter="all" onclick="app.setCustomerFilter('all', this)">Barchasi</button>
+                                <button class="filter-pill" data-filter="debtor" onclick="app.setCustomerFilter('debtor', this)">Qarzdorlar</button>
+                                <button class="filter-pill" data-filter="overdue" onclick="app.setCustomerFilter('overdue', this)">Muddati O'tganlar</button>
+                                <button class="filter-pill" data-filter="clean" onclick="app.setCustomerFilter('clean', this)">To'langanlar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Mijoz</th>
+                                    <th>Face ID</th>
+                                    <th>Telefon</th>
+                                    <th>Asosiy Qarz</th>
+                                    <th>To'langan</th>
+                                    <th>Qoldiq Qarz</th>
+                                    <th>Kechikish Foizi</th>
+                                    <th>Imtiyoz (0%)</th>
+                                    <th>Holati</th>
+                                    <th style="text-align: right;">Amallar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customers-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 2: DO'KON MAHSULOTLARI VA OMBOR -->
+                <div id="tab-content-products" class="content-box d-none">
+                    <div class="box-header">
+                        <div class="box-title">Do'kon Mahsulotlari va Ombor Qoldig'i</div>
+                        <div class="box-actions">
+                            <button class="btn btn-primary btn-sm" onclick="app.openAddProductModal()">
+                                + Yangi Mahsulot Qo'shish
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Mahsulot</th>
+                                    <th>Kategoriya</th>
+                                    <th>Narxi</th>
+                                    <th>O'lchov Birligi</th>
+                                    <th>Ombordagi Soni</th>
+                                    <th>Holati</th>
+                                    <th style="text-align: right;">Amallar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="products-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 3: BUYURTMALAR TARIXI (ORDERS) -->
+                <div id="tab-content-orders" class="content-box d-none">
+                    <div class="box-header">
+                        <div class="box-title">Savdo va Buyurtmalar Jurnali (Naqd & Qarzga)</div>
+                        <div class="box-actions">
+                            <button class="btn btn-outline btn-sm" onclick="QarzExport.exportOrdersToCSV()">
+                                Buyurtmalar CSV
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Buyurtma №</th>
+                                    <th>Sana</th>
+                                    <th>Xaridor</th>
+                                    <th>To'lov Usuli</th>
+                                    <th>Jami Summa</th>
+                                    <th>Tarkibi</th>
+                                    <th style="text-align: right;">Chek</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 4: QARZLAR TARIXI -->
+                <div id="tab-content-debts" class="content-box d-none">
+                    <div class="box-header">
+                        <div class="box-title">Barcha Qarzlar Ro'yxati</div>
+                        <div class="box-actions">
+                            <button class="btn btn-outline btn-sm" onclick="QarzExport.exportAllTransactionsToCSV()">
+                                Operatsiyalar CSV
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="app.openAddDebtModal()">
+                                + Yangi Qarz
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Sana</th>
+                                    <th>Mijoz</th>
+                                    <th>Mahsulot / Izoh</th>
+                                    <th>Summa</th>
+                                    <th>Muddat</th>
+                                    <th>Holati</th>
+                                    <th style="text-align: right;">Amal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="debts-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 5: TO'LOVLAR TARIXI -->
+                <div id="tab-content-payments" class="content-box d-none">
+                    <div class="box-header">
+                        <div class="box-title">To'lovlar Jurnali</div>
+                        <div class="box-actions">
+                            <button class="btn btn-success btn-sm" onclick="app.openPaymentModal()">
+                                + To'lov Qabul Qilish
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Chek №</th>
+                                    <th>Sana</th>
+                                    <th>Mijoz</th>
+                                    <th>To'lov Usuli</th>
+                                    <th>Summa</th>
+                                    <th>Izoh</th>
+                                    <th style="text-align: right;">Amallar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payments-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 6: SO'ROVLAR -->
+                <div id="tab-content-requests" class="content-box d-none">
+                    <div class="box-header">
+                        <div class="box-title">Mijozlardan Kelgan Qarz So'rovlari</div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Sana</th>
+                                    <th>Mijoz</th>
+                                    <th>Telefon</th>
+                                    <th>Mahsulot</th>
+                                    <th>Summa</th>
+                                    <th>Holati</th>
+                                    <th style="text-align: right;">Amal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="requests-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 7: SOZLAMALAR -->
+                <div id="tab-content-settings" class="content-box d-none">
+                    <div class="box-header">
+                        <div class="box-title">Do'kon Sozlamalari & Foiz Siyosati</div>
+                    </div>
+                    <div style="padding: 1.5rem;">
+                        <div class="form-grid">
+                            <div style="background-color: var(--bg-main); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                                <h4 style="margin-bottom: 1rem; font-size: 1.1rem; font-weight: 700;">🏢 Do'kon Rekvizitlari & Foiz Siyosati</h4>
+                                <form id="settings-store-form" onsubmit="app.handleSaveStoreSettings(event)">
+                                    <div class="form-group">
+                                        <label class="form-label">Do'kon nomi:</label>
+                                        <input type="text" id="setting-store-name" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Telefon raqami:</label>
+                                        <input type="text" id="setting-store-phone" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Do'kon manzili:</label>
+                                        <input type="text" id="setting-store-address" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Onlayn to'lov uchun karta raqami:</label>
+                                        <input type="text" id="setting-card-details" class="form-control" placeholder="9860 3501 ...">
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label class="form-label">Valyuta:</label>
+                                            <input type="text" id="setting-currency" class="form-control" value="so'm">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Kechikkan qarz oylik foizi (%):</label>
+                                            <input type="number" step="0.5" id="setting-interest-rate" class="form-control" value="3.0">
+                                        </div>
+                                    </div>
+                                    <div class="form-group" style="margin-top: 0.5rem;">
+                                        <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; font-weight: 600; cursor: pointer;">
+                                            <input type="checkbox" id="setting-advance-discount" checked>
+                                            Oldindan to'lov qilgan mijozga keyingi oyga 0% foiz imtiyozi berilsin
+                                        </label>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Saqlash</button>
+                                </form>
+                            </div>
+
+                            <div style="background-color: var(--bg-main); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                                <h4 style="margin-bottom: 1rem; font-size: 1.1rem; font-weight: 700;">🔐 Admin Paroli</h4>
+                                <form id="settings-auth-form" onsubmit="app.handleSavePassword(event)">
+                                    <div class="form-group">
+                                        <label class="form-label">Admin Login:</label>
+                                        <input type="text" id="setting-admin-user" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Yangi Parol:</label>
+                                        <input type="password" id="setting-admin-pass" class="form-control" placeholder="Yangi parol..." required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Parolni Yangilash</button>
+                                </form>
+
+                                <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+                                <h4 style="margin-bottom: 0.5rem; font-size: 1.1rem; font-weight: 700;">💾 Zaxira Nusxa (Backup)</h4>
+                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                    <button class="btn btn-outline" onclick="app.downloadBackup()">Zaxira Yuklab Olish (JSON)</button>
+                                    <label class="btn btn-outline" style="cursor: pointer;">
+                                        Zaxiradan Tiklash
+                                        <input type="file" id="backup-file-input" accept=".json" style="display: none;" onchange="app.handleRestoreBackup(event)">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- ============================================================
+         MODAL OYNALAR
+         ============================================================ -->
+
+    <!-- 1. SAVAT (SHOPPING CART) MODALI -->
+    <div class="modal-backdrop" id="modal-cart">
+        <div class="modal-container" style="max-width: 580px;">
+            <div class="modal-header">
+                <h3 class="modal-title">🛒 Xarid Savati</h3>
+                <button class="btn btn-ghost btn-icon" onclick="app.closeModal('modal-cart')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div id="cart-items-container" class="cart-items-list">
+                    <!-- JS orqali to'ldiriladi -->
+                </div>
+
+                <div style="background-color: var(--bg-main); padding: 1rem 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.25rem;">
+                    <span style="font-weight: 700; font-size: 1rem;">Jami Savat Summasi:</span>
+                    <span style="font-size: 1.4rem; font-weight: 800; color: var(--primary);" id="cart-total-amount">0 so'm</span>
+                </div>
+
+                <!-- Xarid usullari -->
+                <div style="font-weight: 700; font-size: 0.9rem; margin-bottom: 0.5rem;">Xarid usulini tanlang:</div>
+                <div class="checkout-choice-grid">
+                    <div class="checkout-choice-card" id="choice-pay-cash" onclick="app.selectCheckoutChoice('cash')">
+                        <div class="choice-icon">💵</div>
+                        <div class="choice-title">Naqd / Karta bilan</div>
+                        <div class="choice-desc">Darhol to'lash va chek olish</div>
+                    </div>
+                    <div class="checkout-choice-card selected" id="choice-pay-debt" onclick="app.selectCheckoutChoice('debt')">
+                        <div class="choice-icon">📝</div>
+                        <div class="choice-title">Qarzga (Nasiyaga)</div>
+                        <div class="choice-desc">Qarz daftariga yozdirish</div>
+                    </div>
+                </div>
+
+                <div id="cart-debt-notice" style="background-color: var(--primary-light); color: var(--primary-text); padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.8rem; margin-bottom: 1rem;">
+                    💡 <strong>Nasiya qoidasi:</strong> Bu xarid sizning Qarz Daftaringizga kiritiladi. O'z vaqtida to'lasangiz keyingi oyga 0% foiz, kechiktirilsa oylik 3% hisoblanadi.
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: space-between;">
+                <button type="button" class="btn btn-outline btn-sm text-danger" onclick="app.clearUserCart()">Savatni tozalash</button>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button type="button" class="btn btn-outline" onclick="app.closeModal('modal-cart')">Davom etish</button>
+                    <button type="button" class="btn btn-success btn-lg" onclick="app.openCheckoutModal()">Rasmiylashtirish</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. RASMIYLASHTIRISH (CHECKOUT) MODALI -->
+    <div class="modal-backdrop" id="modal-checkout">
+        <div class="modal-container" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="checkout-modal-title">Buyurtmani Rasmiylashtirish</h3>
+                <button class="btn btn-ghost btn-icon" onclick="app.closeModal('modal-checkout')">✕</button>
+            </div>
+            <form id="checkout-form" onsubmit="app.handleProcessCheckout(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Xaridor (Mijoz): *</label>
+                        <select id="checkout-customer-select" class="form-control" required>
+                            <!-- JS orqali to'ldiriladi -->
+                        </select>
+                    </div>
+
+                    <div id="checkout-due-date-group" class="form-group">
+                        <label class="form-label">Qarzni Qaytarish Muddati: *</label>
+                        <input type="date" id="checkout-due-date" class="form-control" required>
+                        <div class="preset-buttons">
+                            <span style="font-size: 0.75rem; color: var(--text-muted); align-self: center;">Tezkor:</span>
+                            <button type="button" class="preset-btn" onclick="app.setCheckoutDueDays(7)">+7 kun</button>
+                            <button type="button" class="preset-btn" onclick="app.setCheckoutDueDays(15)">+15 kun</button>
+                            <button type="button" class="preset-btn" onclick="app.setCheckoutDueDays(30)">+1 oy</button>
+                            <button type="button" class="preset-btn" onclick="app.setCheckoutDueDays(90)">+3 oy</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Buyurtma uchun izoh (ixtiyoriy):</label>
+                        <input type="text" id="checkout-note" class="form-control" placeholder="Eslatma...">
+                    </div>
+
+                    <div style="background-color: var(--bg-main); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                        <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 0.35rem;">
+                            <span>To'lov usuli:</span>
+                            <span id="checkout-summary-paytype" class="text-primary">Qarzga (Nasiya)</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 1.15rem; font-weight: 800;">
+                            <span>Jami summa:</span>
+                            <span id="checkout-summary-total" class="text-danger">0 so'm</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="app.closeModal('modal-checkout')">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary btn-lg" id="checkout-submit-btn">Xaridni Tasdiqlash & Chek Olish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. YANGI MAHSULOT QO'SHISH / TAHRIRLASH MODALI (Admin) -->
+    <div class="modal-backdrop" id="modal-product">
+        <div class="modal-container" style="max-width: 520px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="product-modal-title">Yangi Mahsulot Qo'shish</h3>
+                <button class="btn btn-ghost btn-icon" onclick="app.closeModal('modal-product')">✕</button>
+            </div>
+            <form id="product-form" onsubmit="app.handleSaveProduct(event)">
+                <input type="hidden" id="prod-id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Mahsulot Nomi: *</label>
+                        <input type="text" id="prod-name" class="form-control" required placeholder="Masalan: Oliy navli un (50kg)">
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Kategoriya:</label>
+                            <select id="prod-category" class="form-control">
+                                <option value="Oziq-ovqat">🌾 Oziq-ovqat</option>
+                                <option value="Qurilish">🧱 Qurilish mollari</option>
+                                <option value="Xo'jalik">✨ Xo'jalik mollari</option>
+                                <option value="Elektronika">🔋 Elektronika</option>
+                                <option value="Boshqa">📦 Boshqa</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Belgi / Emoji:</label>
+                            <input type="text" id="prod-emoji" class="form-control" value="📦">
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Narxi (so'm): *</label>
+                            <input type="number" id="prod-price" class="form-control" required min="500" step="500" placeholder="120000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">O'lchov birligi:</label>
+                            <input type="text" id="prod-unit" class="form-control" value="dona" placeholder="dona, qop, kg...">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ombordagi mavjud soni:</label>
+                        <input type="number" id="prod-stock" class="form-control" value="10" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Qisqacha tavsif:</label>
+                        <textarea id="prod-desc" class="form-control" placeholder="Mahsulot haqida ma'lumot..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="app.closeModal('modal-product')">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 4. MIJOZ AUTH MODALI (KIRISH & RO'YXATDAN O'TISH) -->
+    <div class="modal-backdrop" id="modal-customer-auth">
+        <div class="modal-container" style="max-width: 520px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Mijoz Shaxsiy Kabineti</h3>
+                <button class="btn btn-ghost btn-icon" onclick="app.closeModal('modal-customer-auth')">✕</button>
+            </div>
+            <div class="modal-body" style="padding-top: 0.5rem;">
+                <div class="auth-tabs">
+                    <button class="auth-tab-btn active" id="auth-tab-btn-login" onclick="app.switchAuthTab('login')">🔑 Kirish</button>
+                    <button class="auth-tab-btn" id="auth-tab-btn-face" onclick="app.switchAuthTab('face')">📸 Face ID Bilan</button>
+                    <button class="auth-tab-btn" id="auth-tab-btn-register" onclick="app.switchAuthTab('register')">📝 Ro'yxatdan O'tish</button>
+                </div>
+
+                <!-- Parol bilan kirish -->
+                <form id="cust-login-form" onsubmit="app.handleCustomerLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label">Telefon raqamingiz:</label>
+                        <input type="text" id="cust-login-phone" class="form-control" required placeholder="+998 90 123 45 67">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Maxfiy parol:</label>
+                        <input type="password" id="cust-login-pass" class="form-control" required placeholder="Parolni kiriting...">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full btn-lg" style="margin-top: 1rem;">Kabinetga Kirish</button>
+                </form>
+
+                <!-- Face ID bilan kirish -->
+                <div id="cust-face-login-box" class="d-none face-scanner-box">
+                    <div class="face-scanner-wrap">
+                        <video id="face-login-video" class="face-scanner-video" autoplay playsinline muted></video>
+                        <div class="face-scanner-overlay"></div>
+                        <div class="face-scan-laser"></div>
+                    </div>
+                    <div class="face-status-indicator face-status-scanning" id="face-login-status">
+                        🔍 Yuz skanerlanmoqda... Kameraga qarang
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                        <button type="button" class="btn btn-primary" onclick="app.captureFaceForLogin()">📸 Tasdiqlash & Kirish</button>
+                        <button type="button" class="btn btn-outline" onclick="app.switchAuthTab('login')">Parol orqali</button>
+                    </div>
+                </div>
+
+                <!-- Ro'yxatdan o'tish -->
+                <form id="cust-register-form" class="d-none" onsubmit="app.handleCustomerRegister(event)">
+                    <div class="form-group">
+                        <label class="form-label">Ism va Familiyangiz (F.I.O): *</label>
+                        <input type="text" id="reg-name" class="form-control" required placeholder="Aliyev Vali Rustamovich">
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Telefon: *</label>
+                            <input type="text" id="reg-phone" class="form-control" required placeholder="+998 90 123 45 67">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Parol: *</label>
+                            <input type="password" id="reg-password" class="form-control" required placeholder="Parol...">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Yashash manzili:</label>
+                        <input type="text" id="reg-address" class="form-control" placeholder="Tuman, ko'cha, uy raqami">
+                    </div>
+
+                    <div style="background-color: var(--primary-light); padding: 1rem; border-radius: var(--radius-md); margin: 1rem 0; border: 1.5px dashed var(--primary); text-align: center;">
+                        <div style="font-weight: 700; color: var(--primary-text); margin-bottom: 0.25rem;">📸 Face ID Tasdiqlash</div>
+                        <div id="reg-face-preview-wrap" style="display: none; margin-bottom: 0.75rem;">
+                            <img id="reg-face-preview-img" class="face-preview-img" src="" alt="Face Scan">
+                            <div style="color: var(--success); font-size: 0.8rem; font-weight: 700;">✓ Face ID olindi!</div>
+                        </div>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="app.openFaceCaptureForRegister()">📸 Yuzni Skanerlash</button>
+                        <input type="hidden" id="reg-face-data">
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-full btn-lg">Ro'yxatdan O'tish</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. FACE ID KAMERA MODALI -->
+    <div class="modal-backdrop" id="modal-face-camera">
+        <div class="modal-container" style="max-width: 440px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Face ID Biometrik Skaner</h3>
+                <button class="btn btn-ghost btn-icon" onclick="app.closeFaceCameraModal()">✕</button>
+            </div>
+            <div class="modal-body face-scanner-box">
+                <div class="face-scanner-wrap">
+                    <video id="face-cam-video" class="face-scanner-video" autoplay playsinline muted></video>
+                    <canvas id="face-cam-canvas" class="face-scanner-canvas"></canvas>
+                    <div class="face-scanner-overlay"></div>
+                    <div class="face-scan-laser"></div>
+                </div>
+                <div class="face-status-indicator face-status-scanning">Yuzingizni markazga qarating</div>
+                <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-primary" onclick="app.snapFacePhoto()">📸 Suratga Olish</button>
+                    <label class="btn btn-outline" style="cursor: pointer;">
+                        📁 Selfi Yuklash
+                        <input type="file" accept="image/*" style="display: none;" onchange="app.handleFaceFileUpload(event)">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. YANGI MIJOZ QO'SHISH MODALI (Admin) -->
+    <div class="modal-backdrop" id="modal-customer">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title" id="customer-modal-title">Yangi Mijoz Qo'shish</h3>
+                <button class="btn btn-ghost btn-icon" onclick="app.closeModal('modal-customer')">✕</button>
+            </div>
+            <form id="customer-form" onsubmit="app.handleSaveCustomer(event)">
+                <input type="hidden" id="cust-id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Mijoz F.I.O: *</label>
+                        <input type="text" id="cust-name" class="form-control" required placeholder="Aliyev Vali">
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Telefon: *</label>
+                            <input type="text" id="cust-phone" class="form-control" required placeholder="+998 90 123 45 67">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Telegram:</label>
+                            <input type="text" id="cust-telegram" class="form-control" placeholder="@username">
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Manzil:</label>
+                            <input type="text" id="cust-address" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Pasport:</label>
+                            <input type="text" id="cust-passport" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Parol:</label>
+                        <input type="text" id="cust-password-field" class="form-control" value="123">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="app.closeModal('modal-customer')">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 7. YANGI QARZ YOZISH MODALI -->
+    <div class="modal-backdrop" id="modal-debt">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title">Yangi Qarz Rasmiylashtirish</h3>
+                <button class="btn btn-ghost btn-icon" onclick="app.closeModal('modal-debt')">✕</button>
+            </div>
+            <form id="debt-form" onsubmit="app.handleSaveDebt(event)">
+                <input type="hidden" id="debt-id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Qarzdor Mijoz: *</label>
+                        <select id="debt-customer-select" class="form-control" required></select>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Qarz Summasi: *</label>
+                            <input type="number" id="debt-amount" class="form-control" required min="1000" step="500">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Sana: *</label>
+                            <input type="date" id="debt-date" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mahsulot / Tavsilot: *</label>
+                        <textarea id="debt-desc" class="form-control" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Qaytarish Muddati:</label>
+                        <input type="date" id="debt-due-date" class="form-control">
+                        <div class="preset-buttons">
+                            <button type="button" class="preset-btn" onclick="app.setDueDays(7)">+7 kun</button>
+                            <button type="button" class="preset-btn" onclick="app.setDueDays(15)">+15 kun</button>
+                            <button type="button" class="preset-btn" onclick="app.setDueDays(30)">+1 oy</button>
+                            <button type="button" class="preset-btn" onclick="app.setDueDays(90)">+3 oy</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="app.closeModal('modal-debt')">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Qarzni Yozish & Chek</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 8. TO'LOV QABUL QILISH MODALI -->
+    <div class="modal-backdrop" id="modal-payment">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title">Qarz To'lovini Qabul Qilish</h3>
+                <button class="btn btn-ghost btn-icon" onclick="app.closeModal('modal-payment')">✕</button>
+            </div>
+            <form id="payment-form" onsubmit="app.handleSavePayment(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">To'lovchi Mijoz: *</label>
+                        <select id="payment-customer-select" class="form-control" required onchange="app.updatePaymentHelperInfo()"></select>
+                    </div>
+                    <div id="payment-cust-info" class="bal-box danger" style="margin-bottom: 1rem; display: none;">
+                        <div class="bal-label">Asosiy Qarz Qoldig'i:</div>
+                        <div class="bal-value text-danger" id="payment-remaining-display">0 so'm</div>
+                        <div id="payment-interest-info" style="font-size: 0.8rem; font-weight: 700; color: var(--danger); margin-top: 0.25rem;"></div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">To'lov Summasi: *</label>
+                            <input type="number" id="payment-amount" class="form-control" required min="500" step="500">
+                            <div class="preset-buttons" style="margin-top: 0.35rem;">
+                                <button type="button" class="preset-btn" onclick="app.fillFullPayment()">To'liq Qarzni To'lash</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Sana: *</label>
+                            <input type="date" id="payment-date" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">To'lov Usuli:</label>
+                        <select id="payment-method" class="form-control">
+                            <option value="naqd">💵 Naqd pul</option>
+                            <option value="karta">💳 Plastik karta</option>
+                            <option value="click">📱 Click / Payme / O'tkazma</option>
+                            <option value="boshqa">Boshqa</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Izoh:</label>
+                        <input type="text" id="payment-note" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="app.closeModal('modal-payment')">Bekor qilish</button>
+                    <button type="submit" class="btn btn-success">To'lovni Tasdiqlash & Chek</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 9. MIJOZNING DETALLI KARTASI MODALI -->
+    <div class="modal-backdrop" id="modal-customer-detail">
+        <div class="modal-container modal-lg">
+            <div class="modal-header">
+                <h3 class="modal-title" id="detail-customer-name">Mijoz Kartasi</h3>
+                <button class="btn btn-ghost btn-icon" onclick="app.closeModal('modal-customer-detail')">✕</button>
+            </div>
+            <div class="modal-body" id="customer-detail-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="app.closeModal('modal-customer-detail')">Yopish</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 10. CHEK / KVITANSIYA CHOP ETISH MODALI -->
+    <div class="modal-backdrop" id="modal-receipt">
+        <div class="modal-container" style="max-width: 440px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Chek / Kvitansiya</h3>
+                <button class="btn btn-ghost btn-icon" onclick="app.closeModal('modal-receipt')">✕</button>
+            </div>
+            <div class="modal-body" style="background-color: var(--bg-main); padding: 1rem;">
+                <div id="receipt-render-target"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="app.closeModal('modal-receipt')">Yopish</button>
+                <button type="button" class="btn btn-primary" onclick="window.print()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect width="12" height="8" x="6" y="14"></rect></svg>
+                    Chop Etish / Saqlash
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 11. TELEGRAM / SMS XABAR YUBORISH MODALI -->
+    <div class="modal-backdrop" id="modal-share">
+        <div class="modal-container" style="max-width: 480px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Eslatma Xabarnoma Yuborish</h3>
+                <button class="btn btn-ghost btn-icon" onclick="app.closeModal('modal-share')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                    Mijozga yuboriladigan tayyor eslatma:
+                </p>
+                <textarea id="share-message-text" class="form-control" rows="5" readonly></textarea>
+                <div style="display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-outline" onclick="app.copyShareText()">📋 Nusxa olish</button>
+                    <a id="share-telegram-btn" href="#" target="_blank" class="btn btn-primary">✈️ Telegram orqali</a>
+                    <a id="share-sms-btn" href="#" class="btn btn-outline">💬 SMS</a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="app.closeModal('modal-share')">Yopish</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST XABARNOMALAR KONTEYNERI -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Skriptlar -->
+    <script src="js/storage.js"></script>
+    <script src="js/export.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
