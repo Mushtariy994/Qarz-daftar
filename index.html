@@ -3,29 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qarz Daftari & Onlayn Do'kon - Mukammal Tizim</title>
+    <title>HALOL NASIYA - Muddatli To'lov & Onlayn Savdo Markazi</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛍️</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><defs><linearGradient id=%22g%22 x1=%220%25%22 y1=%220%25%22 x2=%22100%25%22 y2=%22100%25%22><stop offset=%220%25%22 stop-color=%22%23065f46%22/><stop offset=%2250%25%22 stop-color=%22%23059669%22/><stop offset=%22100%25%22 stop-color=%22%232563eb%22/></linearGradient></defs><rect width=%22100%22 height=%22100%22 rx=%2226%22 fill=%22url(%23g)%22/><path d=%22M70 24C62 22 47 28 45 45C43 62 57 72 70 70C60 76 42 73 36 60C30 47 35 30 48 23C55 19 64 20 70 24Z%22 fill=%22%23fbbf24%22/><path d=%22M34 38C34 34.7 36.7 32 40 32H60C63.3 32 66 34.7 66 38V68C66 71.3 63.3 74 60 74H40C36.7 74 34 71.3 34 68V38Z%22 fill=%22rgba(15,23,42,0.45)%22 stroke=%22%23fff%22 stroke-width=%223%22/><path d=%22M43 32V25C43 21 46 17 50 17C54 17 57 21 57 25V32%22 stroke=%22%23fbbf24%22 stroke-width=%223.5%22 stroke-linecap=%22round%22/><path d=%22M41 45V61M59 45V61M41 53H59%22 stroke=%22%23fff%22 stroke-width=%223.5%22 stroke-linecap=%22round%22/><path d=%22M41 45L59 61%22 stroke=%22%2334d399%22 stroke-width=%223%22 stroke-linecap=%22round%22/></svg>">
 </head>
 <body>
 
     <!-- YUQORI ASOSIY NAVIGATSIYA -->
     <header class="navbar">
         <div class="container nav-content">
-            <div class="brand" id="brand-logo" onclick="app.showStoreView()">
-                <div class="brand-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path><path d="M6 6h10"></path><path d="M6 10h10"></path><path d="M6 14h6"></path></svg>
+            <div class="brand" id="brand-logo" onclick="app.showStoreView()" title="Bosh sahifa">
+                <div class="brand-logo-wrap">
+                    <svg class="brand-logo-svg" width="44" height="44" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="navHnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#064e3b" />
+                                <stop offset="45%" stop-color="#059669" />
+                                <stop offset="85%" stop-color="#10b981" />
+                                <stop offset="100%" stop-color="#2563eb" />
+                            </linearGradient>
+                            <linearGradient id="navHnGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#f59e0b" />
+                                <stop offset="60%" stop-color="#fbbf24" />
+                                <stop offset="100%" stop-color="#fef08a" />
+                            </linearGradient>
+                            <filter id="navHnShadow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feDropShadow dx="0" dy="3" stdDeviation="3.5" flood-color="#059669" flood-opacity="0.4" />
+                            </filter>
+                        </defs>
+                        <rect x="4" y="4" width="92" height="92" rx="24" fill="url(#navHnGrad)" filter="url(#navHnShadow)" />
+                        <rect x="6.5" y="6.5" width="87" height="87" rx="21.5" stroke="rgba(255,255,255,0.3)" stroke-width="2.5" />
+                        <!-- Crescent -->
+                        <path d="M72 23C63 21 46 27 44 46C42 63 58 74 72 71C61 77 41 74 35 60C28 46 34 28 48 21C55 17 65 19 72 23Z" fill="url(#navHnGold)" opacity="0.9" />
+                        <!-- Shopping bag -->
+                        <path d="M34 38C34 34.6863 36.6863 32 40 32H60C63.3137 32 66 34.6863 66 38V68C66 71.3137 63.3137 74 60 74H40C36.6863 74 34 71.3137 34 68V38Z" fill="rgba(15, 23, 42, 0.45)" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round" />
+                        <path d="M43 32V25C43 21 46 17 50 17C54 17 57 21 57 25V32" stroke="url(#navHnGold)" stroke-width="3" stroke-linecap="round" />
+                        <!-- H and N monogram -->
+                        <path d="M41 44V62" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" />
+                        <path d="M59 44V62" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" />
+                        <path d="M41 53H59" stroke="url(#navHnGold)" stroke-width="3" stroke-linecap="round" />
+                        <path d="M41 44L59 62" stroke="#34d399" stroke-width="3" stroke-linecap="round" />
+                        <circle cx="75" cy="21" r="3.5" fill="#fef08a" />
+                    </svg>
                 </div>
                 <div class="brand-text">
-                    <h1 id="header-store-name">BARAKA SAVDO MARKAZI</h1>
-                    <span>Onlayn Do'kon & Qarz Daftari (Face ID)</span>
+                    <h1 id="header-store-name">HALOL NASIYA</h1>
+                    <span>Muddatli To'lov & Savdo</span>
                 </div>
             </div>
 
             <!-- Asosiy Navigatsiya Tugmalari -->
-            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;">
                 <button class="btn btn-primary btn-sm" id="nav-btn-store" onclick="app.showStoreView()">
-                    🛍️ Onlayn Do'kon
+                    🛍️ Do'kon
+                </button>
+                <button class="btn btn-outline btn-sm" id="nav-btn-pay" onclick="app.showPaymentPortalView()" style="border-color: #10b981; color: #10b981; font-weight: 700;">
+                    💳 Nasiya To'lovi
                 </button>
                 <button class="btn btn-outline btn-sm" id="nav-btn-debt" onclick="app.showDebtView()">
                     📖 Qarz Daftari
@@ -70,29 +103,83 @@
     <!-- ============================================================
          1. ONLAYN DO'KON (MARKET) BO'LIMI
          ============================================================ -->
-    <main id="store-view" class="container" style="padding-top: 1.75rem; padding-bottom: 3rem;">
+    <main id="store-view" class="container" style="padding-top: 1.5rem; padding-bottom: 3rem;">
         
-        <!-- Do'kon Hero Banner -->
-        <div style="background: linear-gradient(135deg, #1e3a8a, #0f172a); color: #ffffff; padding: 2.25rem 2rem; border-radius: var(--radius-xl); margin-bottom: 2rem; box-shadow: var(--shadow-lg); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
-            <div>
-                <span class="badge" style="background-color: rgba(59, 130, 246, 0.3); color: #93c5fd; margin-bottom: 0.75rem;">
-                    🛍️ Rasmiy Onlayn Do'kon & Nasiya Savdo
-                </span>
-                <h2 style="font-size: 2rem; font-weight: 800; line-height: 1.25; margin-bottom: 0.5rem;">
-                    Mahsulotlarni Naqdga yoki <span style="color: #60a5fa;">Qarzga Sotib Oling!</span>
-                </h2>
-                <p style="opacity: 0.9; font-size: 0.95rem; max-width: 600px;">
-                    Kerakli mollarni savatga qo'shing va xarid usulini tanlang: naqd to'lang yoki to'g'ridan-to'g'ri o'z <strong>Qarz Daftaringizga</strong> yozdiring. 
-                    <br><strong style="color: #34d399;">Oldindan to'lasangiz keyingi oyga 0% foiz imtiyozi beriladi!</strong>
-                </p>
+        <!-- KATTA ZAMONAVIY LOGOTIP VA BRAND SHOWCASE (KIRISH PANEL) -->
+        <div class="grand-entrance-hero">
+            <div class="grand-logo-wrapper">
+                <div class="logo-pulse-ring"></div>
+                <svg class="grand-logo-svg" width="105" height="105" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="grandHnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#064e3b" />
+                            <stop offset="35%" stop-color="#059669" />
+                            <stop offset="75%" stop-color="#10b981" />
+                            <stop offset="100%" stop-color="#1d4ed8" />
+                        </linearGradient>
+                        <linearGradient id="grandHnGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#f59e0b" />
+                            <stop offset="50%" stop-color="#fbbf24" />
+                            <stop offset="100%" stop-color="#fef08a" />
+                        </linearGradient>
+                        <filter id="grandHnShadow" x="-25%" y="-25%" width="150%" height="150%">
+                            <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#059669" flood-opacity="0.5" />
+                        </filter>
+                    </defs>
+                    <rect x="5" y="5" width="90" height="90" rx="26" fill="url(#grandHnGrad)" filter="url(#grandHnShadow)" />
+                    <rect x="7.5" y="7.5" width="85" height="85" rx="23.5" stroke="rgba(255,255,255,0.35)" stroke-width="2.5" />
+                    <rect x="11" y="11" width="78" height="78" rx="20" stroke="url(#grandHnGold)" stroke-width="1.2" stroke-dasharray="4 2" opacity="0.7" />
+                    <path d="M72 23C63 21 46 27 44 46C42 63 58 74 72 71C61 77 41 74 35 60C28 46 34 28 48 21C55 17 65 19 72 23Z" fill="url(#grandHnGold)" opacity="0.92" />
+                    <path d="M34 38C34 34.6863 36.6863 32 40 32H60C63.3137 32 66 34.6863 66 38V68C66 71.3137 63.3137 74 60 74H40C36.6863 74 34 71.3137 34 68V38Z" fill="rgba(15, 23, 42, 0.5)" stroke="#ffffff" stroke-width="2.6" stroke-linejoin="round" />
+                    <path d="M43 32V25C43 21 46 17 50 17C54 17 57 21 57 25V32" stroke="url(#grandHnGold)" stroke-width="3.2" stroke-linecap="round" />
+                    <path d="M41 44V62" stroke="#ffffff" stroke-width="3.8" stroke-linecap="round" />
+                    <path d="M59 44V62" stroke="#ffffff" stroke-width="3.8" stroke-linecap="round" />
+                    <path d="M41 53H59" stroke="url(#grandHnGold)" stroke-width="3.2" stroke-linecap="round" />
+                    <path d="M41 44L59 62" stroke="#34d399" stroke-width="3.2" stroke-linecap="round" />
+                    <circle cx="75" cy="21" r="3.8" fill="#fef08a" />
+                    <circle cx="25" cy="72" r="2.5" fill="#fef08a" />
+                </svg>
             </div>
-            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                <button class="btn btn-success btn-lg" onclick="app.openCartModal()">
-                    🛒 Savatni Ochish (<span id="store-banner-cart-count">0</span>)
-                </button>
-                <button class="btn btn-outline btn-lg" style="color: #fff; border-color: rgba(255,255,255,0.4);" onclick="app.showDebtView()">
-                    📖 Qarzimni Tekshirish
-                </button>
+            <div class="grand-hero-content">
+                <div class="grand-hero-top-badge">
+                    <span class="pulse-green-dot"></span>
+                    <span>100% ISHONCHLI &bull; RASMIY HALOL SAVDO VA MUDDATLI TO'LOV TIZIMI</span>
+                </div>
+                <h1 class="grand-hero-title">
+                    HALOL <span class="gradient-text-gold">NASIYA</span>
+                </h1>
+                <p class="grand-hero-desc">
+                    0% ribo va ortiqcha foizsiz adolatli muddatli to'lov. Tovarlarni naqd pulga yoki qulay <strong>Halol Nasiyaga (30-90 kun)</strong> xarid qiling, hisobingiz va to'lovlaringizni shaffof kuzatib boring!
+                </p>
+                <div class="grand-hero-buttons">
+                    <a href="#store-products-grid" class="btn btn-primary btn-lg" onclick="document.getElementById('store-products-grid').scrollIntoView({behavior: 'smooth'})">
+                        🛍️ Mahsulotlarni Ko'rish
+                    </a>
+                    <button class="btn btn-success btn-lg" onclick="app.showPaymentPortalView()" style="box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
+                        💳 Nasiya Qarzini To'lash
+                    </button>
+                    <button class="btn btn-outline btn-lg" style="color: #fff; border-color: rgba(255,255,255,0.4);" onclick="app.showDebtView()">
+                        📖 Qarz Daftari (Face ID)
+                    </button>
+                </div>
+                <div class="grand-hero-features">
+                    <div class="hero-feat-item">
+                        <span class="feat-icon">✨</span>
+                        <span>0% Ortiqcha Foiz</span>
+                    </div>
+                    <div class="hero-feat-item">
+                        <span class="feat-icon">🤝</span>
+                        <span>Halol Muddatli To'lov</span>
+                    </div>
+                    <div class="hero-feat-item">
+                        <span class="feat-icon">📸</span>
+                        <span>Face ID Biometrika</span>
+                    </div>
+                    <div class="hero-feat-item">
+                        <span class="feat-icon">⚡</span>
+                        <span>Click / Payme / Uzum / Naqd</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -124,7 +211,60 @@
     </main>
 
     <!-- ============================================================
-         2. QARZ DAFTARI & MIJOZ KABINETI BO'LIMI
+         2. MAXSUS BO'LIM: NASIYA TO'LOVI (QARZNI SO'NDIRISH PORTALI)
+         ============================================================ -->
+    <main id="payment-portal-view" class="container d-none" style="padding-top: 1.75rem; padding-bottom: 3.5rem;">
+        
+        <!-- Portal Hero Banner -->
+        <div class="payment-portal-hero">
+            <div style="display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
+                <div class="portal-hero-icon">
+                    💳
+                </div>
+                <div>
+                    <span class="badge" style="background-color: rgba(16, 185, 129, 0.2); color: #10b981; font-weight: 700; margin-bottom: 0.35rem; display: inline-flex; align-items: center; gap: 0.35rem;">
+                        <span class="stock-live-dot"></span> Maxsus To'lov Maydoni & Qarzni So'ndirish
+                    </span>
+                    <h2 style="font-size: 1.55rem; font-weight: 800; margin: 0 0 0.35rem; color: #ffffff;">
+                        Halol Nasiya Qarzini To'lash Markazi
+                    </h2>
+                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.85); margin: 0; max-width: 650px;">
+                        Telefon raqamingiz orqali qarzingizni toping yoki ro'yxatdan tanlang. Qarzni Click, Payme, Uzum yoki Naqd orqali to'lab darhol rasmiy chek oling!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1. Qidiruv va Tezkor Tanlash -->
+        <div class="search-box-card" style="margin-bottom: 1.5rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; align-items: end;">
+                <div>
+                    <label class="form-label" style="font-weight: 700;">🔍 Telefon raqamingiz yoki Ismingiz:</label>
+                    <div class="input-group">
+                        <span class="input-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+                        </span>
+                        <input type="text" id="portal-pay-search-input" class="form-control" style="height: 42px; padding-left: 2.25rem;" placeholder="Masalan: 90 111 22 33 yoki Aliyev Vali..." oninput="app.handlePortalPaySearch()">
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label" style="font-weight: 700;">👤 Yoki ro'yxatdan qarzdor mijozni tanlang:</label>
+                    <select id="portal-pay-quick-select" class="form-control" style="height: 42px;" onchange="app.handlePortalCustomerSelect(this.value)">
+                        <option value="">-- Qarzdorni tanlang --</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Dinamik To'lov Maydoni (Karta) -->
+        <div id="portal-payment-main-card">
+            <!-- JS orqali to'ldiriladi -->
+        </div>
+
+    </main>
+
+    <!-- ============================================================
+         3. QARZ DAFTARI & MIJOZ KABINETI BO'LIMI
          ============================================================ -->
     <main id="debt-portal-view" class="d-none">
 
@@ -219,10 +359,15 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="login-password">Maxfiy Parol:</label>
-                            <input type="password" id="login-password" class="form-control" required placeholder="Parolni kiriting...">
+                            <div style="position: relative;">
+                                <input type="password" id="login-password" class="form-control" required placeholder="Parolni kiriting..." style="padding-right: 2.75rem;">
+                                <button type="button" class="btn btn-ghost btn-sm" onclick="app.togglePasswordVisibility('login-password', this)" style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); padding: 4px 8px; font-size: 1rem;" title="Parolni ko'rsatish/yashirish">
+                                    👁️
+                                </button>
+                            </div>
                         </div>
                         <div style="background-color: var(--primary-light); padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--primary-text); margin-bottom: 1.25rem;">
-                            ℹ️ <strong>Standart parol:</strong> <code>123</code> (Sozlamalardan o'zgartirish mumkin)
+                            ℹ️ <strong>Yangi standart parol:</strong> <code>halol777</code> (Login: <code>admin</code>)
                         </div>
                         <button type="submit" class="btn btn-primary w-full btn-lg">
                             Tizimga Kirish
@@ -571,7 +716,12 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Yangi Parol:</label>
-                                        <input type="password" id="setting-admin-pass" class="form-control" placeholder="Yangi parol..." required>
+                                        <div style="position: relative;">
+                                            <input type="password" id="setting-admin-pass" class="form-control" placeholder="Yangi parol..." required style="padding-right: 2.75rem;">
+                                            <button type="button" class="btn btn-ghost btn-sm" onclick="app.togglePasswordVisibility('setting-admin-pass', this)" style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); padding: 4px 8px; font-size: 1rem;" title="Parolni ko'rsatish/yashirish">
+                                                👁️
+                                            </button>
+                                        </div>
                                     </div>
                                     <button type="submit" class="btn btn-primary">Parolni Yangilash</button>
                                 </form>
@@ -622,17 +772,17 @@
                     <div class="checkout-choice-card" id="choice-pay-cash" onclick="app.selectCheckoutChoice('cash')">
                         <div class="choice-icon">💵</div>
                         <div class="choice-title">Naqd / Karta bilan</div>
-                        <div class="choice-desc">Darhol to'lash va chek olish</div>
+                        <div class="choice-desc">Darhol to'lash va savdo cheki olish</div>
                     </div>
                     <div class="checkout-choice-card selected" id="choice-pay-debt" onclick="app.selectCheckoutChoice('debt')">
-                        <div class="choice-icon">📝</div>
-                        <div class="choice-title">Qarzga (Nasiyaga)</div>
-                        <div class="choice-desc">Qarz daftariga yozdirish</div>
+                        <div class="choice-icon">🤝</div>
+                        <div class="choice-title">Halol Nasiya (Muddatli)</div>
+                        <div class="choice-desc">0% foiz, muddatli to'lovga olish</div>
                     </div>
                 </div>
 
-                <div id="cart-debt-notice" style="background-color: var(--primary-light); color: var(--primary-text); padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.8rem; margin-bottom: 1rem;">
-                    💡 <strong>Nasiya qoidasi:</strong> Bu xarid sizning Qarz Daftaringizga kiritiladi. O'z vaqtida to'lasangiz keyingi oyga 0% foiz, kechiktirilsa oylik 3% hisoblanadi.
+                <div id="cart-debt-notice" style="background-color: rgba(16, 185, 129, 0.12); color: #047857; border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.8rem; margin-bottom: 1rem;">
+                    🤝 <strong>Halol Nasiya kafolati:</strong> Ushbu xarid sizning nomingizga <strong>0% ustamasiz</strong> muddatli to'lovga yoziladi. Tovarni hozir oling, pulini belgilangan muddatda bo'lib to'lang!
                 </div>
             </div>
             <div class="modal-footer" style="justify-content: space-between;">
@@ -662,14 +812,14 @@
                     </div>
 
                     <div id="checkout-due-date-group" class="form-group">
-                        <label class="form-label">Qarzni Qaytarish Muddati: *</label>
+                        <label class="form-label">Halol Nasiya To'lov Muddati: *</label>
                         <input type="date" id="checkout-due-date" class="form-control" required>
                         <div class="preset-buttons">
-                            <span style="font-size: 0.75rem; color: var(--text-muted); align-self: center;">Tezkor:</span>
-                            <button type="button" class="preset-btn" onclick="app.setCheckoutDueDays(7)">+7 kun</button>
-                            <button type="button" class="preset-btn" onclick="app.setCheckoutDueDays(15)">+15 kun</button>
-                            <button type="button" class="preset-btn" onclick="app.setCheckoutDueDays(30)">+1 oy</button>
-                            <button type="button" class="preset-btn" onclick="app.setCheckoutDueDays(90)">+3 oy</button>
+                            <span style="font-size: 0.75rem; color: var(--text-muted); align-self: center;">Muddat:</span>
+                            <button type="button" class="preset-btn" onclick="app.setCheckoutDueDays(15)">15 kun</button>
+                            <button type="button" class="preset-btn" onclick="app.setCheckoutDueDays(30)">1 oy (30 kun)</button>
+                            <button type="button" class="preset-btn" onclick="app.setCheckoutDueDays(60)">2 oy (60 kun)</button>
+                            <button type="button" class="preset-btn" onclick="app.setCheckoutDueDays(90)">3 oy (90 kun)</button>
                         </div>
                     </div>
 
@@ -735,6 +885,13 @@
                         <div class="form-group">
                             <label class="form-label">O'lchov birligi:</label>
                             <input type="text" id="prod-unit" class="form-control" value="dona" placeholder="dona, qop, kg...">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Rasm havolasi (URL - jonli rasm):</label>
+                        <input type="url" id="prod-image" class="form-control" placeholder="https://images.unsplash.com/... yoki rasm havolasi" oninput="app.previewProductImage(this.value)">
+                        <div id="prod-image-preview-wrap" style="display: none; margin-top: 0.5rem; border-radius: var(--radius-sm); overflow: hidden; height: 90px; max-width: 130px; border: 1px solid var(--border-color);">
+                            <img id="prod-image-preview" src="" alt="Ko'rinish" style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
                     </div>
                     <div class="form-group">
@@ -1030,9 +1187,13 @@
             </div>
             <div class="modal-body" style="background-color: var(--bg-main); padding: 1rem;">
                 <div id="receipt-render-target"></div>
+                <div id="receipt-payment-cta-box" style="display: none; margin-top: 1rem;"></div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" id="receipt-modal-footer">
                 <button type="button" class="btn btn-outline" onclick="app.closeModal('modal-receipt')">Yopish</button>
+                <button type="button" class="btn btn-success d-none" id="receipt-direct-pay-btn" onclick="app.handlePayCurrentReceipt()">
+                    💳 Qarzni To'lash
+                </button>
                 <button type="button" class="btn btn-primary" onclick="window.print()">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect width="12" height="8" x="6" y="14"></rect></svg>
                     Chop Etish / Saqlash
@@ -1062,6 +1223,134 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline" onclick="app.closeModal('modal-share')">Yopish</button>
             </div>
+        </div>
+    </div>
+
+    <!-- 12. ONLAYN / MIJOZ TO'LOV MODALI -->
+    <div class="modal-backdrop" id="modal-online-payment">
+        <div class="modal-container" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 class="modal-title">💳 Qarz To'lovini Amalga Oshirish</h3>
+                <button class="btn btn-ghost btn-icon" onclick="app.closeModal('modal-online-payment')">✕</button>
+            </div>
+            <form id="online-payment-form" onsubmit="app.handleProcessOnlinePayment(event)">
+                <input type="hidden" id="online-pay-cust-id">
+                <input type="hidden" id="online-pay-debt-id">
+                <div class="modal-body">
+                    <!-- Mijoz va Balans informatsiyasi -->
+                    <div class="pay-summary-box">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem;">
+                            <div>
+                                <div class="pay-cust-name" id="online-pay-cust-name">Mijoz</div>
+                                <div class="pay-cust-phone" id="online-pay-cust-phone">+998 ...</div>
+                            </div>
+                            <span class="badge badge-success" id="online-pay-bonus-badge">0% Foiz Imtiyozi</span>
+                        </div>
+                        <div class="pay-balance-rows">
+                            <div class="pay-bal-row">
+                                <span>Asosiy qarz qoldig'i:</span>
+                                <strong id="online-pay-remaining" class="text-danger">0 so'm</strong>
+                            </div>
+                            <div class="pay-bal-row" id="online-pay-interest-row">
+                                <span>Kechikish foizi:</span>
+                                <strong id="online-pay-interest" class="text-warning">0 so'm</strong>
+                            </div>
+                            <div class="pay-bal-row total-row">
+                                <span>Jami to'lanishi kerak:</span>
+                                <strong id="online-pay-total-payable" class="text-primary">0 so'm</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- To'lov summasi -->
+                    <div class="form-group">
+                        <label class="form-label">To'lov Summasi (so'm): *</label>
+                        <input type="number" id="online-pay-amount" class="form-control font-bold" required min="500" step="500" placeholder="Summani kiriting...">
+                        <div class="preset-buttons" style="margin-top: 0.4rem;">
+                            <button type="button" class="preset-btn" onclick="app.setOnlinePayAmount('full')">To'liq to'lash</button>
+                            <button type="button" class="preset-btn" onclick="app.setOnlinePayAmount('half')">50% to'lash</button>
+                            <button type="button" class="preset-btn" onclick="app.setOnlinePayAmount(100000)">100 000</button>
+                            <button type="button" class="preset-btn" onclick="app.setOnlinePayAmount(200000)">200 000</button>
+                            <button type="button" class="preset-btn" onclick="app.setOnlinePayAmount(500000)">500 000</button>
+                        </div>
+                    </div>
+
+                    <!-- To'lov Usullari Tabs/Cards -->
+                    <div class="form-group">
+                        <label class="form-label">To'lov Tizimi: *</label>
+                        <div class="payment-methods-grid">
+                            <div class="pay-method-card selected" data-method="click" onclick="app.selectOnlinePayMethod('click', this)">
+                                <div class="pay-method-badge">🟢 Click Up</div>
+                                <div class="pay-method-sub">Tezkor o'tkazma</div>
+                            </div>
+                            <div class="pay-method-card" data-method="payme" onclick="app.selectOnlinePayMethod('payme', this)">
+                                <div class="pay-method-badge">🔵 Payme</div>
+                                <div class="pay-method-sub">Karta orqali</div>
+                            </div>
+                            <div class="pay-method-card" data-method="uzum" onclick="app.selectOnlinePayMethod('uzum', this)">
+                                <div class="pay-method-badge">🟣 Uzum Bank</div>
+                                <div class="pay-method-sub">Ilova orqali</div>
+                            </div>
+                            <div class="pay-method-card" data-method="naqd" onclick="app.selectOnlinePayMethod('naqd', this)">
+                                <div class="pay-method-badge">💵 Naqd pul</div>
+                                <div class="pay-method-sub">Do'konda to'lash</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Karta va Rekvizitlar -->
+                    <div class="card-requisites-box">
+                        <div style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.2rem;">Do'kon to'lov kartasi (Click / Payme / O'tkazma):</div>
+                        <div class="card-num-row">
+                            <code id="online-pay-card-num">9860 3501 4455 6677</code>
+                            <button type="button" class="btn btn-ghost btn-sm" onclick="app.copyStoreCard()">Nusxa olish</button>
+                        </div>
+                        <div style="font-size: 0.72rem; color: var(--success); font-weight: 600; margin-top: 0.3rem;">
+                            ✓ Muddatida to'langan qarzlar uchun keyingi oyga 0% foiz kafolati beriladi!
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 0.75rem;">
+                        <label class="form-label">Izoh (ixtiyoriy):</label>
+                        <input type="text" id="online-pay-note" class="form-control" placeholder="To'lov haqida eslatma...">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="app.closeModal('modal-online-payment')">Bekor qilish</button>
+                    <button type="submit" class="btn btn-success btn-lg" id="online-pay-submit-btn">
+                        💳 To'lovni Tasdiqlash & Chek Olish
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 13. ALOHIDA QARZ SO'ROVI MODALI (Mijoz uchun) -->
+    <div class="modal-backdrop" id="modal-customer-request">
+        <div class="modal-container" style="max-width: 460px;">
+            <div class="modal-header">
+                <h3 class="modal-title">📝 Nasiya / Qarz So'rovi Yuborish</h3>
+                <button class="btn btn-ghost btn-icon" onclick="app.closeModal('modal-customer-request')">✕</button>
+            </div>
+            <form id="customer-request-form" onsubmit="app.handleCustomerRequest(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">So'ralayotgan Summa (so'm): *</label>
+                        <input type="number" id="cust-req-amount" class="form-control font-bold" required min="5000" step="1000" placeholder="Masalan: 350000">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Kerakli Mahsulotlar / Sabab: *</label>
+                        <textarea id="cust-req-desc" class="form-control" required rows="3" placeholder="Masalan: 2 qop un va 1 baklajka yog'..."></textarea>
+                    </div>
+                    <div style="background-color: var(--primary-light); color: var(--primary-text); padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.78rem;">
+                        ℹ️ Ushbu so'rov do'kon ma'muriyatiga tasdiqlash uchun yuboriladi. Tasdiqlangach hisobingizga kiritiladi.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="app.closeModal('modal-customer-request')">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">So'rovni Yuborish</button>
+                </div>
+            </form>
         </div>
     </div>
 

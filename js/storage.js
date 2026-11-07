@@ -19,19 +19,19 @@ const STORAGE_KEYS = {
 };
 
 const DEFAULT_SETTINGS = {
-    storeName: "BARAKA SAVDO MARKAZI",
+    storeName: "HALOL NASIYA",
     storePhone: "+998 90 123 45 67",
     storeAddress: "Toshkent shahri, Chilonzor tumani",
     ownerName: "Akromjon Rahimov",
     currency: "so'm",
     adminUsername: "admin",
-    adminPassword: "123", // Standart admin paroli
-    cardDetails: "9860 3501 4455 6677 (Akromjon R. - Humo/Uzcard)",
-    // Foiz va Jarima Sozlamalari
-    interestEnabled: true,             // Kechiktirilgan qarzlar uchun foiz yoqilgan
-    overdueMonthlyRate: 3.0,          // Kechikkan har 30 kun uchun 3% foiz
-    advanceDiscountEnabled: true,      // Oldindan to'lov qilsa keyingi oyga 0% foiz imtiyozi
-    smsTemplate: "Hurmatli {name}! {storeName} dan {balance} {currency} qarzingiz bor. Muddat: {dueDate}. Kechiksa {rate}% foiz qo'shiladi. Aloqa: {storePhone}"
+    adminPassword: "halol777", // Yangilangan xavfsiz admin paroli
+    cardDetails: "9860 3501 4455 6677 (Halol Nasiya - Humo/Uzcard)",
+    // Halol Nasiya va Muddatli To'lov Sozlamalari (0% Ribo / Foizsiz adolatli to'lov)
+    interestEnabled: false,             // Halol Nasiyada ortiqcha foiz yo'q (0%)
+    overdueMonthlyRate: 0.0,           // 0% foiz kafolati
+    advanceDiscountEnabled: true,       // Vaqtida to'lash kafolati
+    smsTemplate: "Hurmatli {name}! {storeName} dan {balance} {currency} muddatli to'lovingiz mavjud. Muddat: {dueDate}. Aloqa: {storePhone}"
 };
 
 // Dastlabki namunaviy mahsulotlar (Do'kon katalogi)
@@ -44,6 +44,7 @@ const INITIAL_DEMO_PRODUCTS = [
         unit: "qop",
         stock: 45,
         emoji: "🌾",
+        image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80",
         description: "Toza, oq, nonga juda yaxshi ko'tariladigan sifatli un."
     },
     {
@@ -54,6 +55,7 @@ const INITIAL_DEMO_PRODUCTS = [
         unit: "baklajka",
         stock: 60,
         emoji: "🌻",
+        image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=600&auto=format&fit=crop&q=80",
         description: "Tozalangan, hidsiz va pishiriqlar uchun juda mos yog'."
     },
     {
@@ -64,6 +66,7 @@ const INITIAL_DEMO_PRODUCTS = [
         unit: "qopcha",
         stock: 35,
         emoji: "🧂",
+        image: "https://images.unsplash.com/photo-1581441363689-1f3c3c414635?w=600&auto=format&fit=crop&q=80",
         description: "Toza, quruq, tabiiy shakar qopchada."
     },
     {
@@ -74,6 +77,7 @@ const INITIAL_DEMO_PRODUCTS = [
         unit: "qopcha",
         stock: 25,
         emoji: "🍚",
+        image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80",
         description: "To'y oshi uchun eng sara lazer guruchi."
     },
     {
@@ -84,6 +88,7 @@ const INITIAL_DEMO_PRODUCTS = [
         unit: "qop",
         stock: 120,
         emoji: "🧱",
+        image: "https://images.unsplash.com/photo-1590069261209-f8e9b8642343?w=600&auto=format&fit=crop&q=80",
         description: "Yuqori mustahkamlikka ega sifatli qurilish sementi."
     },
     {
@@ -94,6 +99,7 @@ const INITIAL_DEMO_PRODUCTS = [
         unit: "dona",
         stock: 80,
         emoji: "📐",
+        image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&auto=format&fit=crop&q=80",
         description: "Knauf standart namga chidamli gipsokarton listi."
     },
     {
@@ -104,6 +110,7 @@ const INITIAL_DEMO_PRODUCTS = [
         unit: "chelak",
         stock: 20,
         emoji: "🎨",
+        image: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=600&auto=format&fit=crop&q=80",
         description: "Oppoq, yuviladigan, ob-havoga chidamli emulsiya."
     },
     {
@@ -114,6 +121,7 @@ const INITIAL_DEMO_PRODUCTS = [
         unit: "dona",
         stock: 40,
         emoji: "✨",
+        image: "https://images.unsplash.com/photo-1585421514738-01798e348b17?w=600&auto=format&fit=crop&q=80",
         description: "Dog'larni a'lo darajada ketkazuvchi kir yuvish kukuni."
     },
     {
@@ -124,6 +132,7 @@ const INITIAL_DEMO_PRODUCTS = [
         unit: "to'plam",
         stock: 15,
         emoji: "🫖",
+        image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&auto=format&fit=crop&q=80",
         description: "1 ta katta choynak va 6 ta naqshli milliy piyola."
     },
     {
@@ -134,7 +143,30 @@ const INITIAL_DEMO_PRODUCTS = [
         unit: "dona",
         stock: 18,
         emoji: "🔋",
+        image: "https://images.unsplash.com/photo-1609592426867-0c7f1a30ff7c?w=600&auto=format&fit=crop&q=80",
         description: "Telefonni 4-5 marta quvvatlay oluvchi sifatli powerbank."
+    },
+    {
+        id: 'prod_111',
+        name: "Samarqand Chaqmoq Ko'k Choy 95 (1 kg)",
+        category: "Oziq-ovqat",
+        price: 45000,
+        unit: "quti",
+        stock: 50,
+        emoji: "🍃",
+        image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=600&auto=format&fit=crop&q=80",
+        description: "Xushbo'y, damlamasi to'q va tetiklashtiruvchi ko'k choy."
+    },
+    {
+        id: 'prod_112',
+        name: "Makfa Oliy Navli Spagetti Makaron (5 kg)",
+        category: "Oziq-ovqat",
+        price: 68000,
+        unit: "qopcha",
+        stock: 30,
+        emoji: "🍝",
+        image: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=600&auto=format&fit=crop&q=80",
+        description: "Qattiq bug'doydan tayyorlangan, yopishib qolmaydigan makaron."
     }
 ];
 
@@ -409,7 +441,21 @@ class QarzStorage {
     getSettings() {
         try {
             const data = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-            return data ? { ...DEFAULT_SETTINGS, ...JSON.parse(data) } : DEFAULT_SETTINGS;
+            if (!data) return DEFAULT_SETTINGS;
+            const parsed = JSON.parse(data);
+            let changed = false;
+            if (parsed.storeName === "BARAKA SAVDO MARKAZI" || parsed.storeName === "BARAKA") {
+                parsed.storeName = "HALOL NASIYA";
+                changed = true;
+            }
+            if (parsed.adminPassword === "123" || !parsed.adminPassword) {
+                parsed.adminPassword = "halol777";
+                changed = true;
+            }
+            if (changed) {
+                localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(parsed));
+            }
+            return { ...DEFAULT_SETTINGS, ...parsed };
         } catch (e) {
             return DEFAULT_SETTINGS;
         }
@@ -447,7 +493,7 @@ class QarzStorage {
             }));
             return { success: true };
         }
-        return { success: false, message: "Login yoki parol noto'g'ri! (Standart: admin / 123)" };
+        return { success: false, message: `Login yoki parol noto'g'ri! (Parol: ${settings.adminPassword})` };
     }
 
     logout() {
@@ -917,9 +963,32 @@ class QarzStorage {
 
     getProducts() {
         try {
-            return JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
+            const raw = localStorage.getItem(STORAGE_KEYS.PRODUCTS);
+            if (!raw) {
+                localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(INITIAL_DEMO_PRODUCTS));
+                return INITIAL_DEMO_PRODUCTS;
+            }
+            let list = JSON.parse(raw);
+            let updated = false;
+            // Avval saqlangan mahsulotlarga jonli rasmlarni qo'shish va sinxronlash
+            INITIAL_DEMO_PRODUCTS.forEach(demo => {
+                const found = list.find(p => p.id === demo.id);
+                if (found) {
+                    if (!found.image && demo.image) {
+                        found.image = demo.image;
+                        updated = true;
+                    }
+                } else {
+                    list.push(demo);
+                    updated = true;
+                }
+            });
+            if (updated) {
+                localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(list));
+            }
+            return list;
         } catch (e) {
-            return [];
+            return INITIAL_DEMO_PRODUCTS;
         }
     }
 
@@ -931,6 +1000,7 @@ class QarzStorage {
         const products = this.getProducts();
         const price = Number(data.price) || 0;
         const stock = Number(data.stock) || 0;
+        const image = (data.image || '').trim();
 
         if (data.id) {
             const index = products.findIndex(p => p.id === data.id);
@@ -942,6 +1012,7 @@ class QarzStorage {
                     price: price,
                     unit: data.unit || 'dona',
                     stock: stock,
+                    image: image || products[index].image || '',
                     emoji: data.emoji || '📦',
                     description: (data.description || '').trim(),
                     updatedAt: new Date().toISOString()
@@ -958,6 +1029,7 @@ class QarzStorage {
             price: price,
             unit: data.unit || 'dona',
             stock: stock,
+            image: image,
             emoji: data.emoji || '📦',
             description: (data.description || '').trim(),
             createdAt: new Date().toISOString()
@@ -1068,6 +1140,7 @@ class QarzStorage {
         localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
 
         let createdDebt = null;
+        let createdPayment = null;
 
         // AGAR XARID QARZGA (NASIYA / QARZ DAFTARIGA) BO'LSA
         if (paymentType === 'debt') {
@@ -1088,6 +1161,15 @@ class QarzStorage {
                 date: today,
                 dueDate: calcDueDate
             });
+        } else if (paymentType === 'cash' || paymentType === 'card') {
+            // Naqd yoki karta bilan to'langan xaridni to'lovlar jurnaliga kiritish
+            createdPayment = this.savePayment({
+                customerId: customerId || null,
+                amount: totalAmount,
+                date: today,
+                paymentMethod: paymentType === 'card' ? 'karta' : 'naqd',
+                note: `Do'kondan savdo to'lovi (Chek №: ${orderNumber})`
+            });
         }
 
         const newOrder = {
@@ -1100,6 +1182,7 @@ class QarzStorage {
             totalAmount,
             paymentType, // 'debt' | 'cash' | 'card'
             debtId: createdDebt ? createdDebt.id : null,
+            paymentId: createdPayment ? createdPayment.id : null,
             date: today,
             note: (note || '').trim(),
             status: 'completed',
@@ -1117,7 +1200,40 @@ class QarzStorage {
             success: true,
             order: newOrder,
             debt: createdDebt,
+            payment: createdPayment,
             totalAmount
+        };
+    }
+
+    // --- ONLAYN / MIJOZ TO'LOVI ---
+    submitOnlinePayment({ customerId, debtId = null, amount, paymentMethod = 'click', note = '' }) {
+        const parsedAmount = Number(amount) || 0;
+        if (parsedAmount <= 0) {
+            return { success: false, message: "To'lov summasi noto'g'ri kiritildi!" };
+        }
+
+        const customer = this.getCustomerById(customerId);
+        if (!customer) {
+            return { success: false, message: "Mijoz ma'lumotlari topilmadi!" };
+        }
+
+        const payment = this.savePayment({
+            customerId,
+            debtId,
+            amount: parsedAmount,
+            date: new Date().toISOString().split('T')[0],
+            paymentMethod,
+            note: note || `Onlayn to'lov (${paymentMethod.toUpperCase()})`
+        });
+
+        const updatedBalance = this.getCustomerBalance(customerId);
+
+        return {
+            success: true,
+            message: "To'lov muvaffaqiyatli amalga oshirildi!",
+            payment,
+            customer,
+            balance: updatedBalance
         };
     }
 

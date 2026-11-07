@@ -1,9 +1,9 @@
 @echo off
-title Qarz Daftari Tizimi
+title HALOL NASIYA - Muddatli To'lov va Savdo Tizimi
 cd /d "%~dp0"
 
 echo ========================================================
-echo    QARZ DAFTARI - MUKAMMAL BOSHQARUV DASTURI
+echo    HALOL NASIYA - MUDDATLI TO'LOV VA SAVDO TIZIMI
 echo ========================================================
 echo.
 echo Server ishga tushirilmoqda va brauzer ochilmoqda...

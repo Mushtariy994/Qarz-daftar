@@ -29,9 +29,18 @@ class QarzApp {
             this.showAdminPanel();
         } else if (window.location.hash === '#debt') {
             this.showDebtView();
+        } else if (window.location.hash === '#payment') {
+            this.showPaymentPortalView();
         } else {
             this.showStoreView();
         }
+
+        window.addEventListener('hashchange', () => {
+            if (window.location.hash === '#admin') this.showAdminPanel();
+            else if (window.location.hash === '#debt') this.showDebtView();
+            else if (window.location.hash === '#payment') this.showPaymentPortalView();
+            else this.showStoreView();
+        });
 
         const todayStr = new Date().toLocaleDateString('uz-UZ', {
             year: 'numeric',
@@ -79,23 +88,64 @@ class QarzApp {
     }
 
     // --- ASOSIY BO'LIMLARNI ALMASHISH (VIEW SWITCHER) ---
+    setActiveNav(view) {
+        const btnStore = document.getElementById('nav-btn-store');
+        const btnPay = document.getElementById('nav-btn-pay');
+        const btnDebt = document.getElementById('nav-btn-debt');
+
+        if (btnStore) {
+            btnStore.classList.toggle('btn-primary', view === 'store');
+            btnStore.classList.toggle('btn-outline', view !== 'store');
+        }
+        if (btnPay) {
+            btnPay.classList.toggle('btn-primary', view === 'payment');
+            btnPay.classList.toggle('btn-outline', view !== 'payment');
+            if (view === 'payment') {
+                btnPay.style.color = '#ffffff';
+                btnPay.style.backgroundColor = '#10b981';
+                btnPay.style.borderColor = '#10b981';
+            } else {
+                btnPay.style.color = '#10b981';
+                btnPay.style.backgroundColor = 'transparent';
+                btnPay.style.borderColor = '#10b981';
+            }
+        }
+        if (btnDebt) {
+            btnDebt.classList.toggle('btn-primary', view === 'debt');
+            btnDebt.classList.toggle('btn-outline', view !== 'debt');
+        }
+    }
+
     showStoreView() {
         this.currentView = 'store';
         window.location.hash = '#store';
 
         document.getElementById('store-view')?.classList.remove('d-none');
+        document.getElementById('payment-portal-view')?.classList.add('d-none');
         document.getElementById('debt-portal-view')?.classList.add('d-none');
         document.getElementById('admin-panel-view')?.classList.add('d-none');
 
-        document.getElementById('nav-btn-store')?.classList.add('btn-primary');
-        document.getElementById('nav-btn-store')?.classList.remove('btn-outline');
-        document.getElementById('nav-btn-debt')?.classList.remove('btn-primary');
-        document.getElementById('nav-btn-debt')?.classList.add('btn-outline');
-
+        this.setActiveNav('store');
         document.getElementById('logout-btn')?.classList.add('d-none');
 
         this.renderStoreProducts();
         this.updateCartBadge();
+    }
+
+    showPaymentPortalView(selectedCustomerId = null) {
+        this.currentView = 'payment';
+        window.location.hash = '#payment';
+
+        document.getElementById('store-view')?.classList.add('d-none');
+        document.getElementById('payment-portal-view')?.classList.remove('d-none');
+        document.getElementById('debt-portal-view')?.classList.add('d-none');
+        document.getElementById('admin-panel-view')?.classList.add('d-none');
+
+        this.setActiveNav('payment');
+        document.getElementById('logout-btn')?.classList.add('d-none');
+
+        this.renderPaymentPortal(selectedCustomerId);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     showDebtView() {
@@ -103,17 +153,15 @@ class QarzApp {
         window.location.hash = '#debt';
 
         document.getElementById('store-view')?.classList.add('d-none');
+        document.getElementById('payment-portal-view')?.classList.add('d-none');
         document.getElementById('debt-portal-view')?.classList.remove('d-none');
         document.getElementById('admin-panel-view')?.classList.add('d-none');
 
-        document.getElementById('nav-btn-debt')?.classList.add('btn-primary');
-        document.getElementById('nav-btn-debt')?.classList.remove('btn-outline');
-        document.getElementById('nav-btn-store')?.classList.remove('btn-primary');
-        document.getElementById('nav-btn-store')?.classList.add('btn-outline');
-
+        this.setActiveNav('debt');
         document.getElementById('logout-btn')?.classList.add('d-none');
 
         this.checkCustomerSession();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     showAdminPanel() {
@@ -121,13 +169,11 @@ class QarzApp {
         window.location.hash = '#admin';
 
         document.getElementById('store-view')?.classList.add('d-none');
+        document.getElementById('payment-portal-view')?.classList.add('d-none');
         document.getElementById('debt-portal-view')?.classList.add('d-none');
         document.getElementById('admin-panel-view')?.classList.remove('d-none');
 
-        document.getElementById('nav-btn-store')?.classList.remove('btn-primary');
-        document.getElementById('nav-btn-store')?.classList.add('btn-outline');
-        document.getElementById('nav-btn-debt')?.classList.remove('btn-primary');
-        document.getElementById('nav-btn-debt')?.classList.add('btn-outline');
+        this.setActiveNav('admin');
 
         const isAuth = window.qarzStorage.checkAuth();
         const loginSec = document.getElementById('admin-login-section');
@@ -143,6 +189,368 @@ class QarzApp {
             loginSec?.classList.remove('d-none');
             dashSec?.classList.add('d-none');
             logoutBtn?.classList.add('d-none');
+        }
+    }
+
+    // ============================================================
+    // 1.5. MAXSUS NASIYA TO'LOV PORTALI (PAYMENT PORTAL)
+    // ============================================================
+    renderPaymentPortal(selectedCustId = null) {
+        const select = document.getElementById('portal-pay-quick-select');
+        const customers = window.qarzStorage.getCustomers();
+        const settings = window.qarzStorage.getSettings();
+
+        // Saralash: Qarz summasi kattalar yuqorida
+        const sortedCustomers = [...customers].map(c => {
+            const bal = window.qarzStorage.getCustomerBalance(c.id);
+            return { ...c, bal };
+        }).sort((a, b) => b.bal.totalPayable - a.bal.totalPayable);
+
+        if (select) {
+            select.innerHTML = `
+                <option value="">-- Qarzdorni ro'yxatdan tanlang --</option>
+                ${sortedCustomers.map(c => `
+                    <option value="${c.id}">
+                        ${c.name} (${c.phone}) - ${c.bal.totalPayable > 0 ? QarzExport.formatMoney(c.bal.totalPayable, settings.currency) + ' qarz' : 'Qarzi yo\'q'}
+                    </option>
+                `).join('')}
+            `;
+        }
+
+        let targetId = selectedCustId;
+        if (!targetId) {
+            const currCust = window.qarzStorage.getCurrentCustomer();
+            if (currCust) {
+                targetId = currCust.id;
+            } else {
+                // Agar hech kim tanlanmagan bo'lsa, qarzli birinchi mijoz
+                const firstDebtor = sortedCustomers.find(c => c.bal.totalPayable > 0);
+                if (firstDebtor) targetId = firstDebtor.id;
+            }
+        }
+
+        if (targetId) {
+            if (select) select.value = targetId;
+            this.renderPortalCustomerCard(targetId);
+        } else {
+            this.renderPortalEmptyState();
+        }
+    }
+
+    handlePortalCustomerSelect(customerId) {
+        if (customerId) {
+            this.renderPortalCustomerCard(customerId);
+        } else {
+            this.renderPortalEmptyState();
+        }
+    }
+
+    handlePortalPaySearch() {
+        const input = document.getElementById('portal-pay-search-input');
+        const query = (input?.value || '').trim();
+        if (!query) {
+            const selectVal = document.getElementById('portal-pay-quick-select')?.value;
+            if (selectVal) this.renderPortalCustomerCard(selectVal);
+            else this.renderPortalEmptyState();
+            return;
+        }
+
+        let customer = window.qarzStorage.findCustomerByPhone(query);
+        if (!customer) {
+            const results = window.qarzStorage.searchCustomers(query);
+            if (results.length > 0) customer = results[0];
+        }
+
+        if (customer) {
+            const select = document.getElementById('portal-pay-quick-select');
+            if (select) select.value = customer.id;
+            this.renderPortalCustomerCard(customer.id);
+        } else {
+            const container = document.getElementById('portal-payment-main-card');
+            if (container) {
+                container.innerHTML = `
+                    <div class="search-box-card" style="text-align: center; padding: 3rem 1.5rem;">
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">🔍</div>
+                        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Qarzdor topilmadi</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; max-width: 480px; margin: 0 auto 1.5rem;">
+                            "${query}" bo'yicha hech qanday mijoz topilmadi. Telefon raqami yoki ismni tekshirib ko'ring.
+                        </p>
+                        <button class="btn btn-outline btn-sm" onclick="document.getElementById('portal-pay-search-input').value=''; app.renderPaymentPortal();">Barcha qarzdorlarni ko'rish</button>
+                    </div>
+                `;
+            }
+        }
+    }
+
+    renderPortalEmptyState() {
+        const container = document.getElementById('portal-payment-main-card');
+        if (!container) return;
+        const customers = window.qarzStorage.getCustomers();
+        const debtors = customers.filter(c => window.qarzStorage.getCustomerBalance(c.id).totalPayable > 0);
+
+        container.innerHTML = `
+            <div class="search-box-card" style="text-align: center; padding: 3rem 1.5rem;">
+                <div style="font-size: 3.5rem; margin-bottom: 0.75rem;">💳</div>
+                <h3 style="font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem;">To'lov Qilish Uchun Qarzdorni Tanlang</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; max-width: 520px; margin: 0 auto 1.5rem;">
+                    Yuqoridagi qidiruv maydoniga telefon raqamingizni kiriting yoki quyidagi ro'yxatdan o'z profilingizni tanlang.
+                </p>
+                <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                    ${debtors.slice(0, 5).map(d => `
+                        <button class="tag-pill" onclick="app.handlePortalCustomerSelect('${d.id}')">
+                            👤 ${d.name} (${d.phone})
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    renderPortalCustomerCard(customerId) {
+        const container = document.getElementById('portal-payment-main-card');
+        if (!container) return;
+
+        const customer = window.qarzStorage.getCustomerById(customerId);
+        if (!customer) {
+            this.renderPortalEmptyState();
+            return;
+        }
+
+        const bal = window.qarzStorage.getCustomerBalance(customerId);
+        const settings = window.qarzStorage.getSettings();
+        const debts = window.qarzStorage.getDebtsByCustomer(customerId);
+
+        this.portalCurrentCustomerId = customerId;
+        this.portalCurrentMethod = 'click';
+        this.portalCurrentPayable = bal.totalPayable;
+
+        let avatarHtml = `<div class="cust-avatar-large" style="width: 58px; height: 58px; font-size: 1.5rem;">${customer.name.charAt(0).toUpperCase()}</div>`;
+        if (customer.faceIdData && customer.faceIdData.startsWith('data:image')) {
+            avatarHtml = `<div class="cust-avatar-large" style="width: 58px; height: 58px;"><img src="${customer.faceIdData}" alt="Face ID"></div>`;
+        }
+
+        const activeDebts = bal.detailedDebts.filter(d => !d.isPaid);
+
+        container.innerHTML = `
+            <div class="portal-debtor-card">
+                
+                <!-- Mijoz Bosh qismi -->
+                <div class="portal-debtor-header">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        ${avatarHtml}
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                                <h3 style="font-size: 1.35rem; font-weight: 800; margin: 0;">${customer.name}</h3>
+                                ${customer.hasFaceId ? '<span class="badge-faceid">✓ Face ID Tasdiqlangan</span>' : ''}
+                                ${bal.advanceBonusActive ? '<span class="badge badge-success">0% Foiz Imtiyozi Faol</span>' : ''}
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">
+                                📞 <strong>${customer.phone}</strong> ${customer.address ? `&bull; 📍 ${customer.address}` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        ${bal.totalPayable > 0 
+                            ? `<span class="badge badge-danger" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">To'lanishi Kerak</span>` 
+                            : `<span class="badge badge-success" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">Qarzi To'liq Yopilgan</span>`}
+                    </div>
+                </div>
+
+                <!-- Balans Ko'rsatkichlari -->
+                <div class="portal-balance-summary">
+                    <div class="portal-bal-box">
+                        <div class="portal-bal-label">Asosiy Qarz Qoldig'i</div>
+                        <div class="portal-bal-val ${bal.remaining > 0 ? 'text-danger' : 'text-success'}">
+                            ${QarzExport.formatMoney(bal.remaining, settings.currency)}
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">
+                            Jami olingan qarz: ${QarzExport.formatMoney(bal.totalDebt, settings.currency)}
+                        </div>
+                    </div>
+                    <div class="portal-bal-box ${bal.totalInterest > 0 ? 'danger' : 'success'}">
+                        <div class="portal-bal-label">Kechikish Foizi</div>
+                        <div class="portal-bal-val">
+                            ${bal.totalInterest > 0 ? '+' + QarzExport.formatMoney(bal.totalInterest, settings.currency) : "0 so'm (0% Ribo)"}
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">
+                            ${bal.advanceBonusActive ? '✓ 0% Halol imtiyoz egasisiz' : 'Oylik foiz stavkasi: ' + settings.overdueMonthlyRate + '%'}
+                        </div>
+                    </div>
+                    <div class="portal-bal-box ${bal.totalPayable > 0 ? 'highlight-box' : 'success'}">
+                        <div class="portal-bal-label">JAMI TO'LANISHI KERAK</div>
+                        <div class="portal-bal-val" style="font-size: 1.55rem; font-weight: 800; color: #10b981;">
+                            ${QarzExport.formatMoney(bal.totalPayable, settings.currency)}
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">
+                            To'langan qism: ${QarzExport.formatMoney(bal.totalPaid, settings.currency)}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Olingan Nasiya Mahsulotlari -->
+                <div style="margin-bottom: 1.75rem;">
+                    <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.6rem; display: flex; align-items: center; justify-content: space-between;">
+                        <span>📋 Olingan Nasiya Mahsulotlari va Qarzlar (${debts.length})</span>
+                        <span style="font-size: 0.78rem; font-weight: 500; color: var(--text-muted);">${activeDebts.length} ta faol qarz</span>
+                    </h4>
+                    <div class="table-responsive" style="max-height: 240px; overflow-y: auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Sana</th>
+                                    <th>Mahsulot / Tavsilot</th>
+                                    <th>Summa</th>
+                                    <th>To'langan</th>
+                                    <th>Qaytarish Muddati</th>
+                                    <th>Holati</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${bal.detailedDebts.length === 0 ? '<tr><td colspan="6" style="text-align:center; padding: 1.5rem; color: var(--text-muted);">Qarzlar tarixi yo\'q</td></tr>' : ''}
+                                ${bal.detailedDebts.map(d => `
+                                    <tr>
+                                        <td>${QarzExport.formatDate(d.date)}</td>
+                                        <td style="font-weight: 600;">${d.description}</td>
+                                        <td class="font-bold text-danger">${QarzExport.formatMoney(d.amount, settings.currency)}</td>
+                                        <td class="text-success font-bold">${QarzExport.formatMoney(d.paidAmount, settings.currency)}</td>
+                                        <td>${d.dueDate ? QarzExport.formatDate(d.dueDate) : '-'}</td>
+                                        <td>
+                                            ${d.isPaid ? '<span class="badge badge-success">To\'langan</span>' : (d.isOverdue ? '<span class="badge badge-danger">Kechikkan</span>' : '<span class="badge badge-primary">Faol</span>')}
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TO'LOV FORMASI -->
+                <div style="background-color: var(--bg-main); border: 1.5px solid rgba(16, 185, 129, 0.35); border-radius: var(--radius-md); padding: 1.5rem;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+                        <h4 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #10b981;">
+                            💳 To'lovni Rasmiylashtirish & So'ndirish
+                        </h4>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">
+                            0% ribo &bull; Tezkor rasmiy elektron kvitansiya
+                        </span>
+                    </div>
+
+                    <form onsubmit="app.handlePortalSubmitPayment(event, '${customer.id}')">
+                        <!-- To'lov summasi -->
+                        <div class="form-group">
+                            <label class="form-label" style="font-weight: 700;">To'lov Summasi (so'm): *</label>
+                            <input type="number" id="portal-form-amount" class="form-control font-bold" style="font-size: 1.2rem; height: 46px;" required min="500" step="500" value="${bal.totalPayable > 0 ? bal.totalPayable : 50000}" placeholder="To'lov summasi...">
+                            <div class="preset-buttons" style="margin-top: 0.5rem;">
+                                <button type="button" class="preset-btn" onclick="app.setPortalPayAmount('full')">To'liq Qarz (${QarzExport.formatMoney(bal.totalPayable, settings.currency)})</button>
+                                <button type="button" class="preset-btn" onclick="app.setPortalPayAmount('half')">50% Qism</button>
+                                <button type="button" class="preset-btn" onclick="app.setPortalPayAmount(100000)">100 000</button>
+                                <button type="button" class="preset-btn" onclick="app.setPortalPayAmount(200000)">200 000</button>
+                                <button type="button" class="preset-btn" onclick="app.setPortalPayAmount(500000)">500 000</button>
+                            </div>
+                        </div>
+
+                        <!-- To'lov Tizimlari -->
+                        <div class="form-group">
+                            <label class="form-label" style="font-weight: 700;">To'lov Tizimini Tanlang: *</label>
+                            <div class="payment-methods-grid">
+                                <div class="pay-method-card selected" data-portal-method="click" onclick="app.selectPortalPayMethod('click', this)">
+                                    <div class="pay-method-badge">🟢 Click Up</div>
+                                    <div class="pay-method-sub">Tezkor to'lov</div>
+                                </div>
+                                <div class="pay-method-card" data-portal-method="payme" onclick="app.selectPortalPayMethod('payme', this)">
+                                    <div class="pay-method-badge">🔵 Payme</div>
+                                    <div class="pay-method-sub">Karta orqali</div>
+                                </div>
+                                <div class="pay-method-card" data-portal-method="uzum" onclick="app.selectPortalPayMethod('uzum', this)">
+                                    <div class="pay-method-badge">🟣 Uzum Bank</div>
+                                    <div class="pay-method-sub">Ilova orqali</div>
+                                </div>
+                                <div class="pay-method-card" data-portal-method="naqd" onclick="app.selectPortalPayMethod('naqd', this)">
+                                    <div class="pay-method-badge">💵 Naqd pul</div>
+                                    <div class="pay-method-sub">Do'konda to'lash</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rekvizitlar -->
+                        <div class="card-requisites-box">
+                            <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                                Do'kon rasmiy to'lov kartasi (Click / Payme / Uzum):
+                            </div>
+                            <div class="card-num-row">
+                                <code id="portal-store-card-num">${settings.cardDetails || '9860 3501 4455 6677'}</code>
+                                <button type="button" class="btn btn-ghost btn-sm" onclick="app.copyStoreCard('${settings.cardDetails || '9860 3501 4455 6677'}')">
+                                    📋 Nusxa olish
+                                </button>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--success); font-weight: 600; margin-top: 0.4rem;">
+                                ✓ Muddatidan oldin yoki o'z vaqtida to'langan nasiyalar uchun keyingi oyga 0% FOIZ kafolati beriladi!
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 0.85rem;">
+                            <label class="form-label">To'lov uchun izoh / chek raqami (ixtiyoriy):</label>
+                            <input type="text" id="portal-form-note" class="form-control" placeholder="Masalan: Click orqali o'tkazildi...">
+                        </div>
+
+                        <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.25rem; flex-wrap: wrap;">
+                            <button type="button" class="btn btn-outline" onclick="app.showCustomerReceipt('${customer.id}')">
+                                🖨 Hisobot Kvitansiyasi
+                            </button>
+                            <button type="submit" class="btn btn-success btn-lg" style="box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
+                                💳 To'lovni Tasdiqlash & Rasmiy Chek Olish
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        `;
+    }
+
+    setPortalPayAmount(valOrType) {
+        const input = document.getElementById('portal-form-amount');
+        if (!input) return;
+
+        if (valOrType === 'full') {
+            input.value = this.portalCurrentPayable > 0 ? this.portalCurrentPayable : 50000;
+        } else if (valOrType === 'half') {
+            input.value = this.portalCurrentPayable > 0 ? Math.round(this.portalCurrentPayable / 2) : 25000;
+        } else {
+            input.value = valOrType;
+        }
+    }
+
+    selectPortalPayMethod(method, el) {
+        this.portalCurrentMethod = method;
+        document.querySelectorAll('[data-portal-method]').forEach(card => card.classList.remove('selected'));
+        if (el) el.classList.add('selected');
+    }
+
+    handlePortalSubmitPayment(e, customerId) {
+        e.preventDefault();
+        const amount = Number(document.getElementById('portal-form-amount')?.value) || 0;
+        const note = document.getElementById('portal-form-note')?.value || '';
+        const method = this.portalCurrentMethod || 'click';
+
+        if (amount <= 0) {
+            this.showToast("To'lov summasini kiriting!", "warning");
+            return;
+        }
+
+        const res = window.qarzStorage.submitOnlinePayment({
+            customerId: customerId,
+            amount: amount,
+            paymentMethod: method,
+            note: note || `Halol Nasiya to'lovi (${method.toUpperCase()})`
+        });
+
+        if (res.success) {
+            this.showToast(`To'lov qabul qilindi! 🎉 Chek №: ${res.payment.receiptNumber}`, "success");
+            this.renderPortalCustomerCard(customerId);
+            this.showPaymentReceipt(res.payment.id);
+        } else {
+            this.showToast(res.message, "danger");
         }
     }
 
@@ -190,16 +598,26 @@ class QarzApp {
             return;
         }
 
-        grid.innerHTML = products.map(p => `
+        grid.innerHTML = products.map(p => {
+            const hasImg = !!p.image;
+            return `
             <div class="product-card">
                 <div class="product-img-box">
-                    <span>${p.emoji || '📦'}</span>
+                    ${hasImg ? `
+                        <img class="product-img-real" src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <span style="display:none; font-size: 3.5rem;">${p.emoji || '📦'}</span>
+                    ` : `
+                        <span style="font-size: 3.5rem;">${p.emoji || '📦'}</span>
+                    `}
                     <span class="product-cat-badge">${p.category}</span>
-                    <span class="product-stock-badge">Omborda: ${p.stock} ${p.unit}</span>
+                    <span class="product-stock-badge">
+                        <span class="stock-live-dot"></span> Mavjud: ${p.stock} ${p.unit}
+                    </span>
+                    <span class="product-credit-badge">Nasiya 0%</span>
                 </div>
                 <div class="product-body">
                     <h4 class="product-title">${p.name}</h4>
-                    <p class="product-desc">${p.description || 'Sifatli kafolatlangan mahsulot.'}</p>
+                    <p class="product-desc">${p.description || 'Sifatli kafolatlangan do\'kon mahsuloti.'}</p>
                     <div class="product-price-row">
                         <span class="product-price">${QarzExport.formatMoney(p.price, settings.currency)}</span>
                         <span class="product-unit">/ 1 ${p.unit}</span>
@@ -208,13 +626,14 @@ class QarzApp {
                         <button class="btn btn-primary btn-sm w-full" onclick="app.handleAddToCart('${p.id}')">
                             🛒 Savatga
                         </button>
-                        <button class="btn btn-outline btn-sm" onclick="app.quickBuyOnCredit('${p.id}')" title="Bir zumda qarz daftariga olish">
+                        <button class="btn btn-outline btn-sm" onclick="app.quickBuyOnCredit('${p.id}')" title="Bir zumda qarz daftariga yozdirish">
                             📝 Nasiya
                         </button>
                     </div>
                 </div>
             </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     // ============================================================
@@ -424,11 +843,19 @@ class QarzApp {
 
             // Nasiya yoki Savdo Chekini chiqarish
             const receiptHtml = QarzExport.renderOrderReceiptHTML(res.order, res.debt, customer);
-            this.showCustomReceipt(receiptHtml);
+            this.showCustomReceipt(receiptHtml, {
+                customerId: customer.id,
+                amount: res.order.totalAmount,
+                debtId: res.debt ? res.debt.id : null,
+                orderNumber: res.order.orderNumber,
+                isDebt: this.checkoutChoice === 'debt'
+            });
 
             // Agar qarzga olingan bo'lsa va mijoz o'z kabinetida bo'lsa yangilash
             if (this.currentView === 'debt') {
                 this.checkCustomerSession();
+            } else if (this.currentView === 'payment') {
+                this.renderPortalCustomerCard(customer.id);
             }
         } else {
             this.showToast(res.message, "danger");
@@ -554,8 +981,8 @@ class QarzApp {
 
             <!-- Tezkor Amallar -->
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
-                <button class="btn btn-success btn-lg" onclick="app.openOnlinePaymentModal()">
-                    💳 Onlayn To'lov Qilish
+                <button class="btn btn-success btn-lg" onclick="app.showPaymentPortalView('${cust.id}')" style="box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
+                    💳 Nasiya Qarzini To'lash (Portal)
                 </button>
                 <button class="btn btn-primary btn-lg" onclick="app.showStoreView()">
                     🛍️ Qarzga Mahsulot Olish
@@ -584,10 +1011,11 @@ class QarzApp {
                                 <th>Kechikish Foizi</th>
                                 <th>Qaytarish Muddati</th>
                                 <th>Holat</th>
+                                <th style="text-align: right;">Amal</th>
                             </tr>
                         </thead>
                         <tbody>
-                            ${debts.length === 0 ? '<tr><td colspan="7" style="text-align:center; padding: 2rem; color: var(--text-muted);">Sizda hozircha qarzlar yo\'q</td></tr>' : ''}
+                            ${debts.length === 0 ? '<tr><td colspan="8" style="text-align:center; padding: 2rem; color: var(--text-muted);">Sizda hozircha qarzlar yo\'q</td></tr>' : ''}
                             ${bal.detailedDebts.map(d => `
                                 <tr>
                                     <td>${QarzExport.formatDate(d.date)}</td>
@@ -600,6 +1028,9 @@ class QarzApp {
                                     <td>${d.dueDate ? QarzExport.formatDate(d.dueDate) : '-'}</td>
                                     <td>
                                         ${d.isPaid ? '<span class="badge badge-success">To\'langan</span>' : (d.isOverdue ? '<span class="badge badge-danger">Muddati o\'tgan</span>' : '<span class="badge badge-primary">Faol</span>')}
+                                    </td>
+                                    <td style="text-align: right;">
+                                        ${!d.isPaid ? `<button class="btn btn-success btn-sm" onclick="app.showPaymentPortalView('${cust.id}')">💳 To'lash</button>` : '<span style="color:var(--text-muted); font-size:0.75rem;">Yopilgan</span>'}
                                     </td>
                                 </tr>
                             `).join('')}
@@ -957,7 +1388,10 @@ class QarzApp {
                     <div style="font-size: 0.85rem; color: var(--text-secondary);">
                         Do'kon bilan aloqa: <strong>${settings.storePhone}</strong>
                     </div>
-                    <div style="display: flex; gap: 0.5rem;">
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="btn btn-success btn-sm" onclick="app.showPaymentPortalView('${customer.id}')" style="box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);">
+                            💳 Qarzni To'lash
+                        </button>
                         <button class="btn btn-outline btn-sm" onclick="app.showCustomerReceipt('${customer.id}')">
                             🖨 Kvitansiya
                         </button>
@@ -1069,6 +1503,20 @@ class QarzApp {
     }
 
     // --- TAB: MAHSULOTLAR VA OMBOR (ADMIN) ---
+    previewProductImage(url) {
+        const wrap = document.getElementById('prod-image-preview-wrap');
+        const img = document.getElementById('prod-image-preview');
+        if (!wrap || !img) return;
+
+        if (url && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:image'))) {
+            wrap.style.display = 'block';
+            img.src = url;
+        } else {
+            wrap.style.display = 'none';
+            img.src = '';
+        }
+    }
+
     renderProductsTable() {
         const tbody = document.getElementById('products-table-body');
         if (!tbody) return;
@@ -1084,8 +1532,13 @@ class QarzApp {
         tbody.innerHTML = products.map(p => `
             <tr>
                 <td>
-                    <div style="display: flex; align-items: center; gap: 0.6rem;">
-                        <span style="font-size: 1.5rem;">${p.emoji || '📦'}</span>
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        ${p.image ? `
+                            <img src="${p.image}" alt="${p.name}" style="width: 38px; height: 38px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-color);" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                            <span style="display:none; font-size: 1.5rem;">${p.emoji || '📦'}</span>
+                        ` : `
+                            <span style="font-size: 1.5rem;">${p.emoji || '📦'}</span>
+                        `}
                         <div>
                             <div style="font-weight: 700;">${p.name}</div>
                             <div style="font-size: 0.75rem; color: var(--text-muted);">${p.description || '-'}</div>
@@ -1119,6 +1572,8 @@ class QarzApp {
         document.getElementById('prod-unit').value = 'dona';
         document.getElementById('prod-stock').value = '20';
         document.getElementById('prod-desc').value = '';
+        document.getElementById('prod-image').value = '';
+        this.previewProductImage('');
 
         this.openModal('modal-product');
     }
@@ -1136,6 +1591,8 @@ class QarzApp {
         document.getElementById('prod-unit').value = p.unit;
         document.getElementById('prod-stock').value = p.stock;
         document.getElementById('prod-desc').value = p.description || '';
+        document.getElementById('prod-image').value = p.image || '';
+        this.previewProductImage(p.image || '');
 
         this.openModal('modal-product');
     }
@@ -1150,7 +1607,8 @@ class QarzApp {
             price: document.getElementById('prod-price').value,
             unit: document.getElementById('prod-unit').value,
             stock: document.getElementById('prod-stock').value,
-            description: document.getElementById('prod-desc').value
+            description: document.getElementById('prod-desc').value,
+            image: (document.getElementById('prod-image')?.value || '').trim()
         };
 
         window.qarzStorage.saveProduct(data);
@@ -1428,7 +1886,19 @@ class QarzApp {
         document.getElementById('setting-advance-discount').checked = !!s.advanceDiscountEnabled;
 
         document.getElementById('setting-admin-user').value = s.adminUsername || 'admin';
-        document.getElementById('setting-admin-pass').value = '';
+        document.getElementById('setting-admin-pass').value = s.adminPassword || 'halol777';
+    }
+
+    togglePasswordVisibility(inputId, btn) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+        if (input.type === 'password') {
+            input.type = 'text';
+            if (btn) btn.innerText = '🙈';
+        } else {
+            input.type = 'password';
+            if (btn) btn.innerText = '👁️';
+        }
     }
 
     handleSaveStoreSettings(e) {
@@ -1871,12 +2341,209 @@ class QarzApp {
         this.showCustomReceipt(receiptHtml);
     }
 
-    showCustomReceipt(html) {
+    showCustomReceipt(html, paymentContext = null) {
         const target = document.getElementById('receipt-render-target');
+        const ctaBox = document.getElementById('receipt-payment-cta-box');
+        const payBtn = document.getElementById('receipt-direct-pay-btn');
+
+        this.currentReceiptPaymentContext = paymentContext;
+
         if (target) {
             target.innerHTML = html;
-            this.openModal('modal-receipt');
         }
+
+        if (paymentContext && paymentContext.isDebt) {
+            if (payBtn) payBtn.classList.remove('d-none');
+            if (ctaBox) {
+                ctaBox.style.display = 'block';
+                ctaBox.innerHTML = `
+                    <div class="receipt-cta-banner">
+                        <div class="cta-text">
+                            <strong>💡 Ushbu nasiya qarzini hoziroq to'laysizmi?</strong>
+                            <div>Click, Payme, Uzum yoki Naqd orqali to'lab 0% bonusini saqlang!</div>
+                        </div>
+                        <button class="btn btn-success btn-sm" onclick="app.handlePayCurrentReceipt()">
+                            💳 Hoziroq To'lash
+                        </button>
+                    </div>
+                `;
+            }
+        } else {
+            if (payBtn) payBtn.classList.add('d-none');
+            if (ctaBox) {
+                ctaBox.style.display = 'none';
+                ctaBox.innerHTML = '';
+            }
+        }
+
+        this.openModal('modal-receipt');
+    }
+
+    handlePayCurrentReceipt() {
+        this.closeModal('modal-receipt');
+        if (this.currentReceiptPaymentContext?.customerId) {
+            this.showPaymentPortalView(this.currentReceiptPaymentContext.customerId);
+        } else {
+            this.showPaymentPortalView();
+        }
+    }
+
+    // --- ONLAYN / MIJOZ TO'LOV MODALI LOGIKASI ---
+    openOnlinePaymentModal(options = {}) {
+        const custId = options.customerId || (window.qarzStorage.getCurrentCustomer()?.id) || this.portalCurrentCustomerId;
+        if (!custId) {
+            this.showToast("To'lov qilish uchun avval mijozni tanlang yoki shaxsiy kabinetga kiring!", "warning");
+            this.showPaymentPortalView();
+            return;
+        }
+
+        const customer = window.qarzStorage.getCustomerById(custId);
+        if (!customer) return;
+
+        const bal = window.qarzStorage.getCustomerBalance(custId);
+        const settings = window.qarzStorage.getSettings();
+
+        document.getElementById('online-pay-cust-id').value = custId;
+        document.getElementById('online-pay-debt-id').value = options.debtId || '';
+        document.getElementById('online-pay-cust-name').innerText = customer.name;
+        document.getElementById('online-pay-cust-phone').innerText = customer.phone;
+
+        document.getElementById('online-pay-remaining').innerText = QarzExport.formatMoney(bal.remaining, settings.currency);
+        document.getElementById('online-pay-interest').innerText = bal.totalInterest > 0 ? '+' + QarzExport.formatMoney(bal.totalInterest, settings.currency) : "0 so'm (0% Ribo)";
+        document.getElementById('online-pay-total-payable').innerText = QarzExport.formatMoney(bal.totalPayable, settings.currency);
+
+        const bonusBadge = document.getElementById('online-pay-bonus-badge');
+        if (bonusBadge) {
+            bonusBadge.style.display = bal.advanceBonusActive ? 'inline-block' : 'none';
+        }
+
+        const cardNumEl = document.getElementById('online-pay-card-num');
+        if (cardNumEl) {
+            cardNumEl.innerText = settings.cardDetails || '9860 3501 4455 6677';
+        }
+
+        const defaultAmount = options.amount || (bal.totalPayable > 0 ? bal.totalPayable : 50000);
+        document.getElementById('online-pay-amount').value = defaultAmount;
+        document.getElementById('online-pay-note').value = options.note || '';
+
+        this.selectedOnlinePayMethod = 'click';
+        document.querySelectorAll('.payment-methods-grid .pay-method-card').forEach(c => {
+            c.classList.toggle('selected', c.getAttribute('data-method') === 'click');
+        });
+
+        this.openModal('modal-online-payment');
+    }
+
+    openOnlinePaymentModalForCustomer(customerId) {
+        this.openOnlinePaymentModal({ customerId });
+    }
+
+    openDirectPaymentForOrder(customerId, amount, orderNumber, debtId = null) {
+        this.openOnlinePaymentModal({
+            customerId,
+            amount,
+            debtId,
+            note: `Buyurtma № ${orderNumber} bo'yicha to'lov`
+        });
+    }
+
+    selectOnlinePayMethod(method, el) {
+        this.selectedOnlinePayMethod = method;
+        document.querySelectorAll('.payment-methods-grid .pay-method-card').forEach(c => c.classList.remove('selected'));
+        if (el) el.classList.add('selected');
+    }
+
+    setOnlinePayAmount(valOrType) {
+        const custId = document.getElementById('online-pay-cust-id').value;
+        const bal = custId ? window.qarzStorage.getCustomerBalance(custId) : { totalPayable: 0 };
+        const input = document.getElementById('online-pay-amount');
+        if (!input) return;
+
+        if (valOrType === 'full') {
+            input.value = bal.totalPayable > 0 ? bal.totalPayable : 50000;
+        } else if (valOrType === 'half') {
+            input.value = bal.totalPayable > 0 ? Math.round(bal.totalPayable / 2) : 25000;
+        } else {
+            input.value = valOrType;
+        }
+    }
+
+    copyStoreCard(customCard) {
+        const settings = window.qarzStorage.getSettings();
+        const cardNum = customCard || settings.cardDetails || '9860 3501 4455 6677';
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(cardNum.replace(/\s+/g, '')).then(() => {
+                this.showToast("Karta raqami nusxalandi: " + cardNum, "success");
+            }).catch(() => {
+                this.showToast("Karta raqami: " + cardNum, "info");
+            });
+        } else {
+            this.showToast("Karta raqami: " + cardNum, "info");
+        }
+    }
+
+    handleProcessOnlinePayment(e) {
+        e.preventDefault();
+        const customerId = document.getElementById('online-pay-cust-id').value;
+        const debtId = document.getElementById('online-pay-debt-id').value || null;
+        const amount = Number(document.getElementById('online-pay-amount').value);
+        const note = document.getElementById('online-pay-note').value;
+        const method = this.selectedOnlinePayMethod || 'click';
+
+        if (amount <= 0) {
+            this.showToast("To'lov summasini to'g'ri kiriting!", "warning");
+            return;
+        }
+
+        const res = window.qarzStorage.submitOnlinePayment({
+            customerId,
+            debtId,
+            amount,
+            paymentMethod: method,
+            note: note || `Halol Nasiya to'lovi (${method.toUpperCase()})`
+        });
+
+        if (res.success) {
+            this.closeModal('modal-online-payment');
+            this.showToast("To'lov muvaffaqiyatli qabul qilindi! 🎉", "success");
+
+            if (this.currentView === 'debt') {
+                this.checkCustomerSession();
+            } else if (this.currentView === 'payment') {
+                this.renderPortalCustomerCard(customerId);
+            }
+
+            this.showPaymentReceipt(res.payment.id);
+        } else {
+            this.showToast(res.message, "danger");
+        }
+    }
+
+    // --- ALOHIDA QARZ SO'ROVI (CUSTOMER REQUEST) ---
+    openCustomerRequestModal() {
+        const cust = window.qarzStorage.getCurrentCustomer();
+        if (!cust) {
+            this.showToast("Qarz so'rovi yuborish uchun avval shaxsiy kabinetingizga kiring!", "warning");
+            this.openCustomerAuthModal('login');
+            return;
+        }
+
+        document.getElementById('cust-req-amount').value = '';
+        document.getElementById('cust-req-desc').value = '';
+        this.openModal('modal-customer-request');
+    }
+
+    handleCustomerRequest(e) {
+        e.preventDefault();
+        const cust = window.qarzStorage.getCurrentCustomer();
+        if (!cust) return;
+
+        const amount = Number(document.getElementById('cust-req-amount').value);
+        const desc = document.getElementById('cust-req-desc').value;
+
+        window.qarzStorage.createDebtRequest(cust.id, amount, desc);
+        this.closeModal('modal-customer-request');
+        this.showToast("Qarz so'rovingiz qabul qilindi va do'kon ma'muriyatiga yuborildi!", "success");
     }
 
     openShareModal(customerId) {

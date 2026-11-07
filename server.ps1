@@ -1,4 +1,4 @@
-# Qarz Daftari - Mahalliy Veb Server (Zero Dependency HTTP Server)
+# HALOL NASIYA - Mahalliy Veb Server (Zero Dependency HTTP Server)
 $port = 8080
 $root = $PSScriptRoot
 
@@ -8,7 +8,7 @@ $listener.Prefixes.Add("http://localhost:$port/")
 try {
     $listener.Start()
     Write-Host "=====================================================" -ForegroundColor Cyan
-    Write-Host "  QARZ DAFTARI TIZIMI ISHGA TUSHDI!                  " -ForegroundColor Green
+    Write-Host "  HALOL NASIYA TIZIMI ISHGA TUSHDI!                  " -ForegroundColor Green
     Write-Host "  Manzil: http://localhost:$port                     " -ForegroundColor Yellow
     Write-Host "  Serverni to'xtatish uchun: Ctrl + C                " -ForegroundColor Gray
     Write-Host "=====================================================" -ForegroundColor Cyan
